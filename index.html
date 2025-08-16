@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Triagem Otorrino</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Tela de consentimento LGPD -->
+  <div id="consent-overlay" class="overlay">
+    <div class="consent-box">
+      <p>Para iniciar, confirme o consentimento de uso de dados conforme a LGPD.</p>
+      <label class="consent-check">
+        <input type="checkbox" id="lgpd-checkbox" />
+        Li e concordo.
+      </label>
+      <button id="start-btn" disabled>Iniciar</button>
+    </div>
+  </div>
+
+  <!-- Chat -->
+  <main class="chat-container">
+    <div id="messages" class="messages"></div>
+
+    <!-- Área de entrada de texto (usada apenas na primeira pergunta) -->
+    <form id="input-form" class="input-area">
+      <input id="user-input" type="text"
+             placeholder="Digite aqui..." autocomplete="off" />
+      <button type="submit">Enviar</button>
+    </form>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
