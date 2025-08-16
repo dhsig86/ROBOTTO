@@ -15,25 +15,26 @@ def main() -> int:
         print(f"Erro ao carregar JSON: {err}")
         return 1
 
-    errors = []
+    errors: list[str] = []
 
-    # 2) IDs únicos por domínio
-    seen = {}
-    for item in data.get("red_flags", []):
-        domain = item.get("domain")
-        flag_id = item.get("id")
-        if domain not in seen:
-            seen[domain] = set()
-        if flag_id in seen[domain]:
-            errors.append(f"ID duplicado '{flag_id}' no domínio '{domain}'.")
-        else:
-            seen[domain].add(flag_id)
+    # 1) Itera sobre os domínios e valida IDs e URLs
+    for domain_name, domain in data.get("domains", {}).items():
+        seen_ids: set[str] = set()
+        for item in domain.get("red_flags", []):
+            flag_id = item.get("id")
+            if flag_id in seen_ids:
+                errors.append(
+                    f"ID duplicado '{flag_id}' no domínio '{domain_name}'."
+                )
+            else:
+                seen_ids.add(flag_id)
 
-        # 3) URLs de citações válidas
-        for cite in item.get("citations", []):
-            url = cite.get("url")
-            if not isinstance(url, str) or not url.startswith("http"):
-                errors.append(f"URL inválido em domínio '{domain}', ID '{flag_id}': {url!r}")
+            for cite in item.get("citations", []):
+                url = cite.get("url")
+                if not isinstance(url, str) or not url.startswith("http"):
+                    errors.append(
+                        f"URL inválido no domínio '{domain_name}', red flag '{flag_id}': {url!r}"
+                    )
 
     if errors:
         for err in errors:
