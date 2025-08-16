@@ -176,3 +176,27 @@ body {
     font-size: 18px;
   }
 }
+
+/* Ajustes para telas a partir de 900px */
+@media (min-width: 900px) {
+  :root {
+    --max-width: 800px;
+  }
+
+  .messages {
+    padding: 2rem;
+  }
+
+  .message .content {
+    padding: 1rem;
+  }
+
+  .input-area {
+    padding: 1rem;
+  }
+
+  .btn-group {
+    margin-top: 1rem;
+    gap: 1rem;
+  }
+}
