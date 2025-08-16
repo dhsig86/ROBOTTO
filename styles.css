@@ -149,14 +149,6 @@ body {
   padding: 0.5rem 1rem;
 }
 
-#reset-btn {
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  padding: 0.5rem 1rem;
-  z-index: 5;
-}
-
 /* Indicador de carregamento */
 #loading {
   position: fixed;

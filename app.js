@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
   // Elementos de interface
-  const consentOverlay = document.getElementById('consent-overlay');
+  const consentOverlay = document.getElementById('consent');
   const startBtn       = document.getElementById('start-btn');
   const lgpdCheckbox   = document.getElementById('lgpd-checkbox');
   const messages       = document.getElementById('messages');
