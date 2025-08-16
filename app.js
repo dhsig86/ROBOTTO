@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const messages       = document.getElementById('messages');
   const inputForm      = document.getElementById('input-form');
   const userInput      = document.getElementById('user-input');
-  const resetBtn       = document.getElementById('reset-btn');
+    const resetBtn       = document.getElementById('reset-btn');
 
   // Foco inicial e armadilhas de foco do modal de consentimento
   const overlayFocusable = consentOverlay.querySelectorAll('input, button');
@@ -53,17 +53,22 @@ document.addEventListener('DOMContentLoaded', () => {
   let finished = false;
   let rulesLoaded = false;
 
-  function resetChat() {
-    messages.innerHTML = '';
-    redFlagIndex = 0;
-    pendingAnswers = 0;
-    finished = false;
-    userInput.value = '';
-    inputForm.style.display = 'block';
-    lgpdCheckbox.checked = false;
-    updateStartButton();
-    showConsentOverlay();
-  }
+    const loadingIndicator = document.createElement('div');
+    loadingIndicator.id = 'loading';
+    loadingIndicator.innerHTML = '<div class="spinner"></div><p>Carregando...</p>';
+    document.body.appendChild(loadingIndicator);
+
+    function resetChat() {
+      messages.innerHTML = '';
+      redFlagIndex = 0;
+      pendingAnswers = 0;
+      finished = false;
+      userInput.value = '';
+      inputForm.style.display = 'block';
+      lgpdCheckbox.checked = false;
+      updateStartButton();
+      showConsentOverlay();
+    }
 
   // Carrega regras e disclaimer antes de iniciar o chat
   fetch('rules_otorrino.json')
@@ -71,14 +76,16 @@ document.addEventListener('DOMContentLoaded', () => {
     .then(data => {
       rules = data;
       disclaimer = rules.legal?.disclaimer || '';
-      rulesLoaded = true;
-      updateStartButton();
     })
     .catch(() => {
       // Fallback simples caso o arquivo não seja encontrado
       disclaimer = 'As informações fornecidas não substituem avaliação médica.';
+    })
+    .finally(() => {
       rulesLoaded = true;
+      loadingIndicator.style.display = 'none';
       updateStartButton();
+      showConsentOverlay();
     });
 
   // Habilita botão Start somente se checkbox + regras carregadas
@@ -86,9 +93,6 @@ document.addEventListener('DOMContentLoaded', () => {
     startBtn.disabled = !(lgpdCheckbox.checked && rulesLoaded);
   }
   lgpdCheckbox.addEventListener('change', updateStartButton);
-
-  // Exibe o overlay de consentimento ao carregar
-  showConsentOverlay();
 
   resetBtn.addEventListener('click', resetChat);
 
