@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const messages       = document.getElementById('messages');
   const inputForm      = document.getElementById('input-form');
   const userInput      = document.getElementById('user-input');
+  const resetBtn       = document.getElementById('reset-btn');
 
   // Foco inicial e armadilhas de foco do modal de consentimento
   const overlayFocusable = consentOverlay.querySelectorAll('input, button');
@@ -52,6 +53,18 @@ document.addEventListener('DOMContentLoaded', () => {
   let finished = false;
   let rulesLoaded = false;
 
+  function resetChat() {
+    messages.innerHTML = '';
+    redFlagIndex = 0;
+    pendingAnswers = 0;
+    finished = false;
+    userInput.value = '';
+    inputForm.style.display = 'block';
+    lgpdCheckbox.checked = false;
+    updateStartButton();
+    showConsentOverlay();
+  }
+
   // Carrega regras e disclaimer antes de iniciar o chat
   fetch('rules_otorrino.json')
     .then(r => r.json())
@@ -76,6 +89,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Exibe o overlay de consentimento ao carregar
   showConsentOverlay();
+
+  resetBtn.addEventListener('click', resetChat);
 
   // Ao aceitar LGPD e iniciar
   startBtn.addEventListener('click', () => {
