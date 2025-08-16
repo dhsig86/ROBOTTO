@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const messages       = document.getElementById('messages');
   const inputForm      = document.getElementById('input-form');
   const userInput      = document.getElementById('user-input');
-    const resetBtn       = document.getElementById('reset-btn');
+  const resetBtn       = document.getElementById('reset-btn');
+  const downloadPdfBtn = document.getElementById('download-pdf-btn');
 
   // Foco inicial e armadilhas de foco do modal de consentimento
   const overlayFocusable = consentOverlay.querySelectorAll('input, button');
@@ -53,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let finished = false;
   let rulesLoaded = false;
   let currentDomain = '';
+  let pdfDoc = null;
 
     const loadingIndicator = document.createElement('div');
     loadingIndicator.id = 'loading';
@@ -65,11 +67,13 @@ document.addEventListener('DOMContentLoaded', () => {
       pendingAnswers = 0;
       finished = false;
       currentDomain = '';
+      pdfDoc = null;
       userInput.value = '';
       inputForm.style.display = 'block';
       lgpdCheckbox.checked = false;
       updateStartButton();
       showConsentOverlay();
+      downloadPdfBtn.style.display = 'none';
     }
 
   // Carrega regras e disclaimer antes de iniciar o chat
@@ -97,6 +101,11 @@ document.addEventListener('DOMContentLoaded', () => {
   lgpdCheckbox.addEventListener('change', updateStartButton);
 
   resetBtn.addEventListener('click', resetChat);
+  downloadPdfBtn.addEventListener('click', () => {
+    if (pdfDoc) {
+      pdfDoc.save('triagem.pdf');
+    }
+  });
 
   // Ao aceitar LGPD e iniciar
   startBtn.addEventListener('click', () => {
@@ -162,6 +171,36 @@ document.addEventListener('DOMContentLoaded', () => {
     return detected;
   }
 
+  function buildPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+    const date = new Date().toLocaleString('pt-BR');
+    const userMsgs = Array.from(messages.querySelectorAll('.message.user .content'));
+    const queixa = userMsgs[0]?.textContent || '';
+    const responses = userMsgs.slice(1).map(m => m.textContent);
+
+    let y = 10;
+    doc.text(`Data: ${date}`, 10, y); y += 10;
+    doc.text(`Queixa: ${queixa}`, 10, y); y += 10;
+    doc.text(`Domínio: ${currentDomain}`, 10, y); y += 10;
+    doc.text('Respostas:', 10, y); y += 10;
+    responses.forEach(res => {
+      doc.text(`- ${res}`, 10, y);
+      y += 10;
+      if (y > 280) {
+        doc.addPage();
+        y = 10;
+      }
+    });
+    return doc;
+  }
+
+  function finishChat() {
+    finished = true;
+    pdfDoc = buildPDF();
+    downloadPdfBtn.style.display = 'inline';
+  }
+
   // Mostra até 3 perguntas de red flags por vez
   function showNextQuestions() {
     const domainRules = currentDomain && rules.domains ? rules.domains[currentDomain] : null;
@@ -174,7 +213,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const summary = Array.isArray(summaryRaw) ? summaryRaw.join(' ') : summaryRaw;
       const safety = Array.isArray(safetyRaw) ? safetyRaw.join(' ') : safetyRaw;
       appendMessage('bot', `${summary} ${safety}`);
-      finished = true;
+      finishChat();
       return;
     }
 
@@ -211,7 +250,6 @@ document.addEventListener('DOMContentLoaded', () => {
     pendingAnswers--;
 
     if (choice === 'Sim' && !finished) {
-      finished = true;
       // Desabilita todos os botões remanescentes
       document.querySelectorAll('.btn-group button').forEach(b => b.disabled = true);
 
@@ -223,6 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
       link.target = '_blank';
       link.textContent = 'Buscar "emergencia otorrino"';
       appendMessage('bot', 'Sugerimos procurar atendimento presencial:', link);
+      finishChat();
       return;
     }
 
