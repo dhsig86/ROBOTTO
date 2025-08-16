@@ -93,6 +93,13 @@ body {
   font-size: 1rem;
 }
 
+.btn-group button:disabled {
+  background: #ddd;
+  cursor: not-allowed;
+  pointer-events: none;
+  opacity: 0.6;
+}
+
 /* Overlay de consentimento */
 .overlay {
   position: fixed;
