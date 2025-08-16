@@ -24,9 +24,7 @@ avaliação médica presencial.
      atendimento presencial imediato.
    - Caso todas as red flags sejam negativas, a aplicação apresenta um resumo e
      uma rede de segurança com orientações não urgentes.
-6. **PDF e feedback** – Ao final da conversa é possível baixar um PDF com as
-   respostas e enviar feedback com comentário e nota.
-7. **Reiniciar** – Um botão permite reiniciar a triagem a qualquer momento.
+6. **Reiniciar** – Um botão permite reiniciar a triagem a qualquer momento.
 
 ## Regras de Triagem (rules_otorrino.json)
 
@@ -39,7 +37,7 @@ avaliação médica presencial.
 
 - `index.html` – marcação HTML da interface.
 - `styles.css` – estilos visuais.
-- `app.js` – lógica de interação e geração do PDF.
+- `app.js` – lógica de interação do chat.
 - `rules_otorrino.json` – regras de triagem utilizadas pelo chat.
 - `validate_rules.py` – script para validar o arquivo de regras.
 
