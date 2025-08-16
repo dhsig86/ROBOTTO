@@ -100,6 +100,25 @@ body {
   opacity: 0.6;
 }
 
+/* Formulário de feedback */
+.feedback {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-top: 1px solid #ccc;
+  background: #fff;
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+
+.feedback textarea,
+.feedback select,
+.feedback button {
+  font-size: 1rem;
+  padding: 0.5rem;
+}
+
 /* Overlay de consentimento */
 .overlay {
   position: fixed;

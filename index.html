@@ -34,6 +34,20 @@
     </form>
   </main>
 
+  <form id="feedback-form" class="feedback" style="display:none;">
+    <label for="feedback-comment">Comentário</label>
+    <textarea id="feedback-comment" required></textarea>
+    <label for="feedback-rating">Nota</label>
+    <select id="feedback-rating">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    <button type="submit">Enviar feedback</button>
+  </form>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="app.js"></script>
 </body>

@@ -8,6 +8,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const userInput      = document.getElementById('user-input');
   const resetBtn       = document.getElementById('reset-btn');
   const downloadPdfBtn = document.getElementById('download-pdf-btn');
+  const feedbackForm   = document.getElementById('feedback-form');
+  const feedbackComment= document.getElementById('feedback-comment');
+  const feedbackRating = document.getElementById('feedback-rating');
+
+  const FEEDBACK_ENDPOINT = '';
 
   // Foco inicial e armadilhas de foco do modal de consentimento
   const overlayFocusable = consentOverlay.querySelectorAll('input, button');
@@ -74,6 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
       updateStartButton();
       showConsentOverlay();
       downloadPdfBtn.style.display = 'none';
+      feedbackForm.style.display = 'none';
+      feedbackForm.reset();
     }
 
   // Carrega regras e disclaimer antes de iniciar o chat
@@ -105,6 +112,28 @@ document.addEventListener('DOMContentLoaded', () => {
     if (pdfDoc) {
       pdfDoc.save('triagem.pdf');
     }
+  });
+
+  feedbackForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const data = {
+      comment: feedbackComment.value.trim(),
+      rating: feedbackRating.value,
+      timestamp: new Date().toISOString()
+    };
+    if (FEEDBACK_ENDPOINT) {
+      fetch(FEEDBACK_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      }).catch(console.error);
+    } else {
+      const stored = JSON.parse(localStorage.getItem('feedback') || '[]');
+      stored.push(data);
+      localStorage.setItem('feedback', JSON.stringify(stored));
+    }
+    feedbackForm.reset();
+    feedbackForm.style.display = 'none';
   });
 
   // Ao aceitar LGPD e iniciar
@@ -199,6 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
     finished = true;
     pdfDoc = buildPDF();
     downloadPdfBtn.style.display = 'inline';
+    feedbackForm.style.display = 'flex';
   }
 
   // Mostra até 3 perguntas de red flags por vez
