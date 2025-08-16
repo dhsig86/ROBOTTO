@@ -130,6 +130,14 @@ body {
   padding: 0.5rem 1rem;
 }
 
+#reset-btn {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem 1rem;
+  z-index: 5;
+}
+
 /* Aumenta fonte em telas maiores (acessibilidade) */
 @media (min-width: 600px) {
   :root {
