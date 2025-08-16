@@ -7,6 +7,43 @@ document.addEventListener('DOMContentLoaded', () => {
   const inputForm      = document.getElementById('input-form');
   const userInput      = document.getElementById('user-input');
 
+  // Foco inicial e armadilhas de foco do modal de consentimento
+  const overlayFocusable = consentOverlay.querySelectorAll('input, button');
+  const firstOverlayEl = overlayFocusable[0];
+  const lastOverlayEl = overlayFocusable[overlayFocusable.length - 1];
+
+  function trapOverlayTab(e) {
+    if (e.key !== 'Tab') return;
+    if (e.shiftKey && document.activeElement === firstOverlayEl) {
+      e.preventDefault();
+      lastOverlayEl.focus();
+    } else if (!e.shiftKey && document.activeElement === lastOverlayEl) {
+      e.preventDefault();
+      firstOverlayEl.focus();
+    }
+  }
+
+  function maintainOverlayFocus(e) {
+    if (!consentOverlay.contains(e.target)) {
+      e.stopPropagation();
+      firstOverlayEl.focus();
+    }
+  }
+
+  function showConsentOverlay() {
+    consentOverlay.style.display = 'flex';
+    firstOverlayEl.focus();
+    consentOverlay.addEventListener('keydown', trapOverlayTab);
+    document.addEventListener('focus', maintainOverlayFocus, true);
+  }
+
+  function hideConsentOverlay() {
+    consentOverlay.style.display = 'none';
+    consentOverlay.removeEventListener('keydown', trapOverlayTab);
+    document.removeEventListener('focus', maintainOverlayFocus, true);
+    userInput.focus();
+  }
+
   // Regras e estado da conversa
   let rules = {};
   let disclaimer = '';
@@ -37,11 +74,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
   lgpdCheckbox.addEventListener('change', updateStartButton);
 
+  // Exibe o overlay de consentimento ao carregar
+  showConsentOverlay();
+
   // Ao aceitar LGPD e iniciar
   startBtn.addEventListener('click', () => {
-    consentOverlay.style.display = 'none';
+    hideConsentOverlay();
     appendMessage('bot', 'Qual sua queixa?');
-    userInput.focus();
   });
 
   // Recebe a queixa do usuário
