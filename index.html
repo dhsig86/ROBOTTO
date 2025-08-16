@@ -19,7 +19,6 @@
         <div class="flex justify-end space-x-2">
           <button id="reset-btn" type="button" aria-label="Reiniciar" class="p-2">↻</button>
           <button id="theme-toggle" type="button" aria-label="Alternar tema" class="p-2">🌙</button>
-          <button id="download-pdf-btn" type="button" aria-label="Baixar PDF" class="hidden p-2">Baixar PDF</button>
         </div>
       </header>
       <div id="legal-banner" class="bg-yellow-100 p-1 text-center text-xs">
@@ -51,21 +50,6 @@
     </div>
   </div>
 
-  <form id="feedback-form" class="feedback" style="display:none;">
-    <label for="feedback-comment">Comentário</label>
-    <textarea id="feedback-comment" required></textarea>
-    <label for="feedback-rating">Nota</label>
-    <select id="feedback-rating">
-      <option value="1">1</option>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <option value="4">4</option>
-      <option value="5">5</option>
-    </select>
-    <button type="submit">Enviar feedback</button>
-  </form>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
