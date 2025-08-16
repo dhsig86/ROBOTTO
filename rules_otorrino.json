@@ -1,0 +1,219 @@
+{
+  "version": "1.0.0",
+  "locale": "pt-BR",
+  "legal": {
+    "disclaimer": "Este assistente realiza triagem inicial e não substitui consulta médica. Em caso de piora, dúvidas ou sinais de alerta, procure atendimento presencial. Seus dados são tratados segundo a LGPD.",
+    "data_minimization_note": "Solicitamos apenas informações necessárias para a triagem. Você pode pedir acesso ou eliminação dos dados a qualquer momento."
+  },
+  "domains": {
+    "ouvido": {
+      "intake_examples": [
+        "dor de ouvido e saiu líquido",
+        "zumbido de um lado só",
+        "tontura forte com enjoos",
+        "ouço pior do lado direito",
+        "entrou água e agora dói"
+      ],
+      "red_flags": [
+        {
+          "id": "ear_pain_drain_blood",
+          "question": "Há dor intensa, secreção ou sangramento no ouvido?",
+          "rationale": "Dor intensa e drenagem/sangue sugerem infecção complicada, perfuração, trauma ou outro evento que requer avaliação presencial.",
+          "urgency": "urgent",
+          "on_true": {
+            "action": "ESCALATE",
+            "message": "⚠️ Sinal de alerta no ouvido (dor intensa/secreção/sangue). Procure atendimento presencial ou teleconsulta prioritária."
+          },
+          "citations": [
+            { "label": "MIPS #261 red flags", "url": "https://mdinteractive.com/mips_quality_measure/2025-mips-quality-measure-261", "last_review": "2025-08-16" }
+          ]
+        },
+        {
+          "id": "sudden_hearing_loss",
+          "question": "A perda de audição começou de forma súbita (horas/dias) ou piorou muito rápido?",
+          "rationale": "Perda auditiva súbita/progressão rápida pode indicar emergência otológica.",
+          "urgency": "immediate",
+          "on_true": { "action": "ESCALATE", "message": "⚠️ Perda auditiva súbita/rápida: atendimento imediato." },
+          "citations": [
+            { "label": "MIPS #261 red flags", "url": "https://mdinteractive.com/mips_quality_measure/2025-mips-quality-measure-261", "last_review": "2025-08-16" }
+          ]
+        },
+        {
+          "id": "recurrent_vertigo",
+          "question": "Você tem tontura/vertigem forte, recorrente ou contínua?",
+          "rationale": "Tontura aguda/recorrente pode sinalizar causas periféricas ou centrais que exigem avaliação.",
+          "urgency": "urgent",
+          "on_true": { "action": "ESCALATE", "message": "⚠️ Tontura importante/recorrente: procure avaliação presencial." },
+          "citations": [
+            { "label": "MIPS #261 (tontura)", "url": "https://mdinteractive.com/mips_quality_measure/2025-mips-quality-measure-261", "last_review": "2025-08-16" }
+          ]
+        },
+        {
+          "id": "ear_deformity",
+          "question": "Há deformidade na orelha (desde o nascimento ou após trauma)?",
+          "rationale": "Deformidades congênitas/traumáticas requerem avaliação especializada.",
+          "urgency": "priority",
+          "on_true": { "action": "ESCALATE", "message": "⚠️ Deformidade auricular: encaminhamento prioritário." },
+          "citations": [
+            { "label": "MIPS #261", "url": "https://mdinteractive.com/mips_quality_measure/2025-mips-quality-measure-261", "last_review": "2025-08-16" }
+          ]
+        },
+        {
+          "id": "visible_blood_pus_foreign",
+          "question": "Você vê sangue, pus, uma rolha de cerúmen dura ou algum corpo estranho no ouvido?",
+          "rationale": "Presença de sangue/pus/rolha/corpo estranho é critério de encaminhamento.",
+          "urgency": "urgent",
+          "on_true": { "action": "ESCALATE", "message": "⚠️ Achado no conduto: não introduza objetos; procure avaliação." },
+          "citations": [
+            { "label": "MIPS #261 item 6", "url": "https://mdinteractive.com/mips_quality_measure/2025-mips-quality-measure-261", "last_review": "2025-08-16" }
+          ]
+        },
+        {
+          "id": "asymmetric_loss",
+          "question": "A perda de audição é de um lado só ou mais forte em um ouvido?",
+          "rationale": "Assimetria/unilateralidade é red flag.",
+          "urgency": "priority",
+          "on_true": { "action": "ESCALATE", "message": "⚠️ Perda auditiva assimétrica/unilateral: avaliação com otorrino." },
+          "citations": [
+            { "label": "MIPS #261 item 8", "url": "https://mdinteractive.com/mips_quality_measure/2025-mips-quality-measure-261", "last_review": "2025-08-16" }
+          ]
+        },
+        {
+          "id": "unilateral_pulsatile_tinnitus",
+          "question": "O zumbido é apenas de um lado ou pulsa como batimento?",
+          "rationale": "Zumbido unilateral ou pulsátil é red flag.",
+          "urgency": "priority",
+          "on_true": { "action": "ESCALATE", "message": "⚠️ Zumbido unilateral/pulsátil: agende avaliação prioritária." },
+          "citations": [
+            { "label": "MIPS #261 item 9", "url": "https://mdinteractive.com/mips_quality_measure/2025-mips-quality-measure-261", "last_review": "2025-08-16" }
+          ]
+        },
+        {
+          "id": "poor_speech_disc",
+          "question": "Você entende mal a fala em um ouvido só, comparado ao outro?",
+          "rationale": "Discriminação de fala assimétrica é red flag.",
+          "urgency": "priority",
+          "on_true": { "action": "ESCALATE", "message": "⚠️ Discriminação de fala assimétrica: avaliação com especialista." },
+          "citations": [
+            { "label": "MIPS #261 item 10", "url": "https://mdinteractive.com/mips_quality_measure/2025-mips-quality-measure-261", "last_review": "2025-08-16" }
+          ]
+        }
+      ],
+      "non_urgent_advice": {
+        "summary": [
+          "Evite introduzir hastes/objetos no ouvido.",
+          "Pode usar analgésicos comuns conforme rótulo, se necessário.",
+          "Mantenha o ouvido seco até avaliação, se houve dor recente pós-exposição à água."
+        ],
+        "safety_net": [
+          "Se surgir febre alta, vômitos, piora da dor, nova secreção ou tontura intensa, procure atendimento.",
+          "Se a audição piorar ou houver zumbido novo unilateral, procure avaliação."
+        ],
+        "citations": [
+          { "label": "MIPS #261 (orientação geral e critérios)", "url": "https://mdinteractive.com/mips_quality_measure/2025-mips-quality-measure-261" }
+        ]
+      }
+    },
+    "nariz": {
+      "intake_examples": [
+        "nariz sangrando",
+        "sangramento que volta",
+        "sangra quando assoo",
+        "sangue escorrendo pela narina"
+      ],
+      "red_flags": [
+        {
+          "id": "epistaxis_uncontrolled",
+          "question": "O sangramento NÃO parou após compressão firme por 10–15 minutos (e, se disponível, vasoconstritor nasal)?",
+          "rationale": "Falha de controle com medidas iniciais exige avaliação presencial.",
+          "urgency": "urgent",
+          "on_true": { "action": "ESCALATE", "message": "⚠️ Epistaxe não controlada: procure atendimento presencial." },
+          "citations": [
+            { "label": "ENT UK nosebleeds (compressão 15 min)", "url": "https://www.entuk.org/patients/conditions/42/nosebleeds_epistaxis_update/", "last_review": "2025-08-16" },
+            { "label": "StatPearls Epistaxis (pressão direta ≥10 min)", "url": "https://www.ncbi.nlm.nih.gov/books/NBK435997/", "last_review": "2025-08-16" }
+          ]
+        }
+      ],
+      "non_urgent_advice": {
+        "summary": [
+          "Para sangramento leve: sente-se, incline levemente a cabeça à frente e comprima a parte macia do nariz por 10–15 minutos sem soltar.",
+          "Evite assoar o nariz e esforço físico por 24–48 horas após cessar o sangramento."
+        ],
+        "safety_net": [
+          "Se o sangramento recidivar repetidamente, se for volumoso ou se você usa anticoagulantes, procure avaliação.",
+          "Se houver palidez intensa, tontura, desmaio ou batimentos muito acelerados, vá ao pronto atendimento."
+        ],
+        "citations": [
+          { "label": "ENT UK (medidas iniciais)", "url": "https://www.entuk.org/patients/conditions/42/nosebleeds_epistaxis_update/" },
+          { "label": "Global ENT guideline (epistaxis)", "url": "https://www.entuk.org/_userfiles/pages/files/guidelines/global%20ent%20guidelines/nosebleeds.pdf" }
+        ]
+      }
+    },
+    "laringe": {
+      "intake_examples": [
+        "rouquidão faz semanas",
+        "engasgo para engolir",
+        "dor para engolir",
+        "sensação de algo preso na garganta",
+        "falta de ar e chiado ao respirar"
+      ],
+      "red_flags": [
+        {
+          "id": "airway_obstruction",
+          "question": "Você tem falta de ar importante, ruído para respirar (estridor) ou engasgos com dificuldade para respirar?",
+          "rationale": "Sinais de obstrução de via aérea exigem avaliação presencial imediata.",
+          "urgency": "immediate",
+          "on_true": { "action": "ESCALATE", "message": "🚑 Sinais de obstrução de via aérea: procure atendimento de emergência agora." },
+          "citations": [
+            { "label": "Telemedicina OHNS — limitações via aérea", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9834630/", "last_review": "2025-08-16" }
+          ]
+        },
+        {
+          "id": "severe_dysphagia_aspiration",
+          "question": "Engolir líquidos ou alimentos provoca engasgos frequentes ou sensação de que 'vai para o pulmão'?",
+          "rationale": "Disfagia grave/aspiração tem risco de complicações e requer avaliação presencial.",
+          "urgency": "urgent",
+          "on_true": { "action": "ESCALATE", "message": "⚠️ Disfagia/aspiração: avaliação presencial prioritária." },
+          "citations": [
+            { "label": "Telemedicina cabeça e pescoço — necessidade de exame presencial", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9137386/", "last_review": "2025-08-16" }
+          ]
+        },
+        {
+          "id": "persistent_hoarseness",
+          "question": "Sua rouquidão persiste por várias semanas sem melhora?",
+          "rationale": "Rouquidão persistente é red flag para câncer de cabeça e pescoço e requer laringoscopia.",
+          "urgency": "priority",
+          "on_true": { "action": "ESCALATE", "message": "⚠️ Rouquidão persistente: agende avaliação com otorrino para exame da laringe." },
+          "citations": [
+            { "label": "RCSLT — red flags (rouquidão/disfagia persistentes)", "url": "https://www.rcslt.org/members/clinical-guidance/head-and-neck-cancer/head-and-neck-cancer-guidance/", "last_review": "2025-08-16" },
+            { "label": "RCSLT update 2023", "url": "https://www.rcslt.org/news/updated-head-and-neck-cancer-guidance/", "last_review": "2025-08-16" }
+          ]
+        },
+        {
+          "id": "suspected_malignancy",
+          "question": "Você teve perda de peso sem explicação, lesão/ferida na boca que não cicatriza ou um 'caroço' no pescoço?",
+          "rationale": "Conjunto clássico de alerta para neoplasia de cabeça e pescoço.",
+          "urgency": "priority",
+          "on_true": { "action": "ESCALATE", "message": "⚠️ Sinais de alerta oncológicos: avaliação especializada prioritária." },
+          "citations": [
+            { "label": "RCSLT — sinais de alerta", "url": "https://www.rcslt.org/members/clinical-guidance/head-and-neck-cancer/head-and-neck-cancer-guidance/", "last_review": "2025-08-16" }
+          ]
+        }
+      ],
+      "non_urgent_advice": {
+        "summary": [
+          "Hidratação adequada e repouso vocal.",
+          "Evitar tabaco/álcool enquanto a voz estiver alterada."
+        ],
+        "safety_net": [
+          "Se a rouquidão ultrapassar 3–4 semanas, se houver engasgos frequentes, sangue na saliva ou perda de peso, procure avaliação.",
+          "Se surgir falta de ar, procure emergência."
+        ],
+        "citations": [
+          { "label": "Telemedicina OHNS — necessidade de exame presencial em casos selecionados", "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC9834630/" },
+          { "label": "RCSLT — red flags", "url": "https://www.rcslt.org/members/clinical-guidance/head-and-neck-cancer/head-and-neck-cancer-guidance/" }
+        ]
+      }
+    }
+  }
+}
