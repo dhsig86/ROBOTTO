@@ -52,6 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let pendingAnswers = 0;
   let finished = false;
   let rulesLoaded = false;
+  let currentDomain = '';
 
     const loadingIndicator = document.createElement('div');
     loadingIndicator.id = 'loading';
@@ -63,6 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
       redFlagIndex = 0;
       pendingAnswers = 0;
       finished = false;
+      currentDomain = '';
       userInput.value = '';
       inputForm.style.display = 'block';
       lgpdCheckbox.checked = false;
@@ -111,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!text) return;
 
     appendMessage('user', text);
-    classifyDomain(text);
+    currentDomain = classifyDomain(text);
     userInput.value = '';
 
     // Após a queixa, prossegue para red flags
@@ -157,23 +159,25 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
     appendMessage('bot', `Domínio identificado: ${detected}.`);
+    return detected;
   }
 
   // Mostra até 3 perguntas de red flags por vez
   function showNextQuestions() {
-    if (!rules.red_flags || finished) return;
+    const domainRules = currentDomain && rules.domains ? rules.domains[currentDomain] : null;
+    if (!domainRules?.red_flags || finished) return;
 
-    if (redFlagIndex >= rules.red_flags.length) {
+    if (redFlagIndex >= domainRules.red_flags.length) {
       // Nenhuma red flag positiva => orientação não urgente
-      appendMessage(
-        'bot',
-        `${rules.non_urgent_advice.summary} ${rules.safety_net}`
-      );
+      const advice = domainRules.non_urgent_advice || {};
+      const summary = Array.isArray(advice.summary) ? advice.summary.join(' ') : advice.summary || '';
+      const safety = Array.isArray(advice.safety_net) ? advice.safety_net.join(' ') : advice.safety_net || '';
+      appendMessage('bot', `${summary} ${safety}`);
       finished = true;
       return;
     }
 
-    const batch = rules.red_flags.slice(redFlagIndex, redFlagIndex + 3);
+    const batch = domainRules.red_flags.slice(redFlagIndex, redFlagIndex + 3);
     pendingAnswers = batch.length;
 
     batch.forEach(flag => {
@@ -190,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
           btnContainer.querySelectorAll('button').forEach(b => b.disabled = true);
 
           appendMessage('user', choice);
-          handleAnswer(choice);
+          handleAnswer(choice, flag);
         });
         btnContainer.appendChild(btn);
       });
@@ -202,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Trata a resposta de cada red flag
-  function handleAnswer(choice) {
+  function handleAnswer(choice, flag) {
     pendingAnswers--;
 
     if (choice === 'Sim' && !finished) {
@@ -210,7 +214,8 @@ document.addEventListener('DOMContentLoaded', () => {
       // Desabilita todos os botões remanescentes
       document.querySelectorAll('.btn-group button').forEach(b => b.disabled = true);
 
-      appendMessage('bot', `${rules.on_true.message} Consulte presencialmente um especialista.`);
+      const message = flag?.on_true?.message ? `${flag.on_true.message} Consulte presencialmente um especialista.` : 'Consulte presencialmente um especialista.';
+      appendMessage('bot', message);
 
       const link = document.createElement('a');
       link.href = 'https://www.google.com/search?q=emergencia%20otorrino';
