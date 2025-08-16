@@ -169,9 +169,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (redFlagIndex >= domainRules.red_flags.length) {
       // Nenhuma red flag positiva => orientação não urgente
-      const advice = domainRules.non_urgent_advice || {};
-      const summary = Array.isArray(advice.summary) ? advice.summary.join(' ') : advice.summary || '';
-      const safety = Array.isArray(advice.safety_net) ? advice.safety_net.join(' ') : advice.safety_net || '';
+      const summaryRaw = domainRules?.non_urgent_advice?.summary || '';
+      const safetyRaw = rules.domains?.[currentDomain]?.non_urgent_advice?.safety_net || '';
+      const summary = Array.isArray(summaryRaw) ? summaryRaw.join(' ') : summaryRaw;
+      const safety = Array.isArray(safetyRaw) ? safetyRaw.join(' ') : safetyRaw;
       appendMessage('bot', `${summary} ${safety}`);
       finished = true;
       return;
