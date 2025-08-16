@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Adiciona mensagem ao chat com disclaimer no rodapé
   function appendMessage(sender, text, extraNode = null) {
     const wrapper = document.createElement('div');
-    wrapper.className = `message ${sender}`;
+    wrapper.className = `message message-${sender}`;
 
     const content = document.createElement('div');
     content.className = 'content';
@@ -170,6 +170,11 @@ document.addEventListener('DOMContentLoaded', () => {
     wrapper.appendChild(content);
 
     if (extraNode) wrapper.appendChild(extraNode);
+
+    const time = document.createElement('span');
+    time.className = 'timestamp';
+    time.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    wrapper.appendChild(time);
 
     const disc = document.createElement('div');
     disc.className = 'disclaimer';
@@ -252,10 +257,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     batch.forEach(flag => {
       const btnContainer = document.createElement('div');
-      btnContainer.className = 'btn-group';
+      btnContainer.className = 'quick-replies';
 
       ['Sim', 'Não', 'Não sei'].forEach(choice => {
         const btn = document.createElement('button');
+        btn.className = 'quick-reply';
         btn.textContent = choice;
         btn.addEventListener('click', () => {
           if (btnContainer.dataset.answered || finished) return;
@@ -281,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (choice === 'Sim' && !finished) {
       // Desabilita todos os botões remanescentes
-      document.querySelectorAll('.btn-group button').forEach(b => b.disabled = true);
+      document.querySelectorAll('.quick-reply').forEach(b => b.disabled = true);
 
       const message = flag?.on_true?.message ? `${flag.on_true.message} Consulte presencialmente um especialista.` : 'Consulte presencialmente um especialista.';
       appendMessage('bot', message);
