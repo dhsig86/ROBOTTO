@@ -1,6 +1,6 @@
 :root {
-  --bot-color: #e0e0e0;
-  --user-color: #cce5ff;
+  --bot-color: #f5f5f5;
+  --user-color: #91c9ff;
   --max-width: 600px;
   font-size: 16px;
 }
@@ -42,6 +42,7 @@ body {
   line-height: 1.4;
   width: fit-content;
   max-width: 90%;
+  color: #000;
 }
 
 .message.bot .content {
