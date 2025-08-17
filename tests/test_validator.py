@@ -39,6 +39,13 @@ def test_missing_top_level_key_fail(tmp_path):
     assert validate(path) is False
 
 
+def test_missing_updated_at_fail(tmp_path):
+    data = load_base()
+    data.pop("updated_at", None)
+    path = write_temp(tmp_path, data)
+    assert validate(path) is False
+
+
 def test_pain_threshold_out_of_range_fail(tmp_path):
     data = load_base()
     data["logic"]["pain_escalation_threshold"] = 11
