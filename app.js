@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const lgpdCheckbox = document.getElementById('lgpd-checkbox');
   const themeToggle = document.getElementById('theme-toggle');
   const resetBtn = document.getElementById('reset-btn');
+  const progressBar = document.getElementById('progress');
 
   const LGPD_KEY = 'rob-accept-lgpd';
   const THEME_KEY = 'otto-theme';
@@ -190,6 +191,8 @@ document.addEventListener('DOMContentLoaded', () => {
       showAdvice();
       return;
     }
+    const progress = (chat.flagIndex + 1) / chat.flags.length;
+    progressBar.value = progress;
     chat.currentFlag = chat.flags[chat.flagIndex++];
     botSay(chat.currentFlag.question);
     const opts = (rules.logic?.answer_options || []).map(o => ({ label: o, value: o }));
@@ -212,6 +215,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const msg = `${flag.on_true?.message || ''} ${level.cta || ''}`.trim();
     botSay(msg);
     chat.state = 'END';
+    progressBar.value = 0;
   }
 
   function showAdvice() {
@@ -224,6 +228,7 @@ document.addEventListener('DOMContentLoaded', () => {
       botSay('Sem orientações específicas. Procure um especialista se necessário.');
     }
     chat.state = 'END';
+    progressBar.value = 0;
   }
 
   function handleIntake(text) {
@@ -255,6 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
     messages.innerHTML = '';
     quickReplies.innerHTML = '';
     userInput.value = '';
+    progressBar.value = 0;
     chat = new ChatState();
     messageHistory = [];
     lastQuickReplies = [];
