@@ -68,9 +68,13 @@ def validate_self_care(data: dict) -> List[str]:
         on_true = item.get("on_true", {})
         if "self_care" in on_true:
           sc = on_true["self_care"]
-          if not isinstance(sc, list) or not all(isinstance(x, str) for x in sc):
+          if (
+              not isinstance(sc, list)
+              or not sc
+              or not all(isinstance(x, str) and x.strip() for x in sc)
+          ):
             errors.append(
-                f"{prefix}[{idx}].on_true.self_care deve ser lista de strings")
+                f"{prefix}[{idx}].on_true.self_care deve ser lista não vazia de strings")
 
     check(data.get("global_red_flags", []), "global_red_flags")
     for domain_name, domain in data.get("domains", {}).items():
