@@ -46,6 +46,16 @@ Por ser uma aplicação estática, basta abrir `index.html` em um navegador
 compatível. Para atualizar as regras, modifique `rules_otorrino.json` e valide o
 conteúdo com `python validate_rules.py`.
 
+## Testes
+
+Instale as dependências de desenvolvimento e execute os testes automatizados:
+
+```bash
+pip install -r requirements.txt
+pytest
+python validate_rules.py
+```
+
 ## Política de retenção de dados
 
 - As informações do chat e o consentimento LGPD são armazenados apenas no

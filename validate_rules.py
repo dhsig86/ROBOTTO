@@ -17,17 +17,8 @@ REQUIRED_KEYS = {"version", "locale", "legal", "intake", "domains", "logic"}
 REQUIRED_ANSWER_OPTIONS = {"Sim", "Não"}
 
 
-def main() -> int:
-    rules_path = Path("rules_otorrino.json")
-    try:
-        data = json.loads(rules_path.read_text(encoding="utf-8"))
-    except FileNotFoundError:
-        print(f"Arquivo não encontrado: {rules_path}")
-        return 1
-    except json.JSONDecodeError as err:
-        print(f"Erro ao carregar JSON: {err}")
-        return 1
-
+def validate(data: dict) -> list[str]:
+    """Retorna lista de erros encontrados no dicionário de regras."""
     errors: list[str] = []
 
     # 1) Verifica chaves obrigatórias
@@ -91,6 +82,21 @@ def main() -> int:
             "IDs de red flags duplicados: " + ", ".join(sorted(duplicate_ids))
         )
 
+    return errors
+
+
+def main(path: str = "rules_otorrino.json") -> int:
+    rules_path = Path(path)
+    try:
+        data = json.loads(rules_path.read_text(encoding="utf-8"))
+    except FileNotFoundError:
+        print(f"Arquivo não encontrado: {rules_path}")
+        return 1
+    except json.JSONDecodeError as err:
+        print(f"Erro ao carregar JSON: {err}")
+        return 1
+
+    errors = validate(data)
     if errors:
         for err in errors:
             print(err)
@@ -100,5 +106,5 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
-
+    path = sys.argv[1] if len(sys.argv) > 1 else "rules_otorrino.json"
+    sys.exit(main(path))
