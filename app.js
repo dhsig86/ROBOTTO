@@ -144,11 +144,12 @@ document.addEventListener('DOMContentLoaded', () => {
     symptomOptions.innerHTML = '';
     field.choices.forEach(choice => {
       const label = document.createElement('label');
-      label.className = 'flex items-center space-x-2';
+      label.className = 'flex items-center space-x-2 dark:text-gray-100';
       const input = document.createElement('input');
       input.type = 'checkbox';
       input.value = choice;
       input.name = 'symptom';
+      input.className = 'rounded border dark:bg-gray-700 dark:border-gray-600';
       if (prefill && chat.symptoms.includes(choice)) input.checked = true;
       label.appendChild(input);
       const span = document.createElement('span');
@@ -261,7 +262,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-
   flagForm.addEventListener('submit', e => {
     e.preventDefault();
     flagOverlay.style.display = 'none';
@@ -280,6 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
       showAdvice();
     }
   });
+
 
 
   function scrollToBottom() {
@@ -377,7 +378,7 @@ document.addEventListener('DOMContentLoaded', () => {
     options.forEach(opt => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'rounded border px-3 py-1';
+      btn.className = 'rounded border px-3 py-1 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600';
       btn.textContent = opt.label;
       // Acessibilidade: rótulo e navegação por teclado
       btn.setAttribute('aria-label', opt.ariaLabel || opt.label);
@@ -538,7 +539,7 @@ document.addEventListener('DOMContentLoaded', () => {
     quickReplies.innerHTML = '';
     const sendBtn = document.createElement('button');
     sendBtn.type = 'button';
-    sendBtn.className = 'rounded bg-green-600 px-3 py-1 text-white';
+    sendBtn.className = 'rounded bg-green-600 px-3 py-1 text-white dark:bg-green-700';
     sendBtn.textContent = 'Enviar para médico';
     sendBtn.addEventListener('click', () => {
       sendBtn.disabled = true;
