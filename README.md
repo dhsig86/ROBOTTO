@@ -44,11 +44,21 @@ avaliação médica presencial.
 
 ## Envio de resultados
 
-Ao final da triagem, o botão **Enviar para médico** permite compartilhar o resumo:
+Ao final da triagem:
 
-- Se a variável global `DOCTOR_ENDPOINT` estiver definida, os dados são enviados via requisição `POST` para esse endpoint.
-- Caso contrário, o envio é apenas simulado: é gerado um link `mailto:` com o resumo e um arquivo `triagem.json` é oferecido para download manual.
-- Nessa situação, uma mensagem informa ao usuário que o envio não foi feito automaticamente.
+- Um resumo é salvo no navegador como `results-YYYYMMDD.json`. Se o armazenamento local falhar, o arquivo é baixado automaticamente.
+- O botão **Enviar para médico** abre um e-mail com o resumo. Enquanto não houver um backend real, o usuário deve compartilhar manualmente o arquivo gerado.
+
+### Recuperar e enviar manualmente
+
+1. Verifique se o arquivo `results-YYYYMMDD.json` foi baixado automaticamente.
+2. Caso contrário, recupere-o no `localStorage`:
+   - Abra as ferramentas de desenvolvedor do navegador.
+   - Acesse **Application/Armazenamento** > **Local Storage** e procure pela chave `results-YYYYMMDD.json`.
+   - Copie o valor e salve em um arquivo `.json`.
+3. Envie o arquivo ao médico por e-mail ou outro canal disponível.
+
+Se a variável global `DOCTOR_ENDPOINT` estiver definida, os dados também podem ser enviados automaticamente via requisição `POST` para esse endpoint.
 
 ## Execução Local
 

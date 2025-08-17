@@ -35,6 +35,13 @@ def test_classification_after_symptoms():
               </form>
               <button id="skip-symptoms"></button>
             </div>
+            <div id="flag-overlay">
+              <form id="flag-form">
+                <div id="flag-options"></div>
+                <input id="no-flags" type="checkbox" />
+              </form>
+            </div>
+            <button id="review-symptoms"></button>
         </body>`;
 
         const dom = new JSDOM(html, { runScripts: 'outside-only', url: 'http://localhost' });
