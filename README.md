@@ -46,3 +46,12 @@ Por ser uma aplicação estática, basta abrir `index.html` em um navegador
 compatível. Para atualizar as regras, modifique `rules_otorrino.json` e valide o
 conteúdo com `python validate_rules.py`.
 
+## Política de retenção de dados
+
+- As informações do chat e o consentimento LGPD são armazenados apenas no
+  navegador do usuário.
+- Esses dados são preservados por até **30 dias**; depois desse período, ao
+  carregar a página, eles são removidos automaticamente.
+- O botão **Reiniciar** também limpa imediatamente todas as informações
+  armazenadas.
+

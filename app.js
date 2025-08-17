@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const THEME_KEY = 'otto-theme';
   const CHAT_KEY = 'otto-chat';
   const RULES_KEY = 'otto-rules';
+  const TIMESTAMP_KEY = 'otto-chat-ts';
+  const MAX_CHAT_AGE = 30 * 24 * 60 * 60 * 1000; // 30 dias
 
   let rules = null;
 
@@ -40,6 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
       quickReplies: lastQuickReplies
     };
     localStorage.setItem(CHAT_KEY, JSON.stringify(data));
+    localStorage.setItem(TIMESTAMP_KEY, Date.now().toString());
   }
 
   // Tema
@@ -87,7 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
   function showConsent() { consentOverlay.style.display = 'flex'; }
   function hideConsent() { consentOverlay.style.display = 'none'; }
 
-  const savedChat = localStorage.getItem(CHAT_KEY);
+  let savedChat = localStorage.getItem(CHAT_KEY);
+  const savedTimestamp = parseInt(localStorage.getItem(TIMESTAMP_KEY), 10);
+  if (savedTimestamp && Date.now() - savedTimestamp > MAX_CHAT_AGE) {
+    localStorage.removeItem(CHAT_KEY);
+    localStorage.removeItem(LGPD_KEY);
+    localStorage.removeItem(TIMESTAMP_KEY);
+    savedChat = null;
+  }
   if (savedChat) {
     try {
       const data = JSON.parse(savedChat);
@@ -351,6 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
     lastQuickReplies = [];
     localStorage.removeItem(LGPD_KEY);
     localStorage.removeItem(CHAT_KEY);
+    localStorage.removeItem(TIMESTAMP_KEY);
     showConsent();
   }
 
