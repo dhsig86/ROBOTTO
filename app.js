@@ -176,7 +176,14 @@ document.addEventListener('DOMContentLoaded', () => {
     temp.className = 'message bot';
     const content = document.createElement('div');
     content.className = 'content';
-    content.textContent = 'digitando…';
+    const indicator = document.createElement('div');
+    indicator.className = 'typing';
+    for (let i = 0; i < 3; i++) {
+      const dot = document.createElement('span');
+      dot.className = 'typing-dot';
+      indicator.appendChild(dot);
+    }
+    content.appendChild(indicator);
     temp.appendChild(content);
     messages.appendChild(temp);
     scrollToBottom();
