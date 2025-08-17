@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const LGPD_KEY = 'rob-accept-lgpd';
   const THEME_KEY = 'otto-theme';
+  const CHAT_KEY = 'otto-chat';
 
   let rules = null;
 
@@ -25,6 +26,17 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   let chat = new ChatState();
+  let messageHistory = [];
+  let lastQuickReplies = [];
+
+  function saveChat() {
+    const data = {
+      chat,
+      messages: messageHistory,
+      quickReplies: lastQuickReplies
+    };
+    localStorage.setItem(CHAT_KEY, JSON.stringify(data));
+  }
 
   // Tema
   const savedTheme = localStorage.getItem(THEME_KEY) || 'light';
@@ -45,12 +57,38 @@ document.addEventListener('DOMContentLoaded', () => {
   function showConsent() { consentOverlay.style.display = 'flex'; }
   function hideConsent() { consentOverlay.style.display = 'none'; }
 
-  if (localStorage.getItem(LGPD_KEY)) {
-    chat.state = 'INTAKE';
-    hideConsent();
-    botSay('Olá! Qual é a sua queixa principal?');
+  const savedChat = localStorage.getItem(CHAT_KEY);
+  if (savedChat) {
+    try {
+      const data = JSON.parse(savedChat);
+      Object.assign(chat, data.chat || {});
+      messageHistory = data.messages || [];
+      messageHistory.forEach(m => {
+        if (m.sender === 'user') {
+          renderUser(m.text, false);
+        } else {
+          renderBot(m.text, false);
+        }
+      });
+      lastQuickReplies = data.quickReplies || [];
+      if (lastQuickReplies.length) renderQuickReplies(lastQuickReplies);
+      if (chat.state !== 'CONSENT') {
+        hideConsent();
+      } else {
+        showConsent();
+      }
+    } catch (e) {
+      showConsent();
+    }
   } else {
-    showConsent();
+    if (localStorage.getItem(LGPD_KEY)) {
+      chat.state = 'INTAKE';
+      hideConsent();
+      saveChat();
+      botSay('Olá! Qual é a sua queixa principal?');
+    } else {
+      showConsent();
+    }
   }
 
   lgpdCheckbox.addEventListener('change', () => {
@@ -62,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem(LGPD_KEY, 'true');
     hideConsent();
     chat.state = 'INTAKE';
+    saveChat();
     botSay('Olá! Qual é a sua queixa principal?');
   });
 
@@ -69,7 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
     messages.scrollTop = messages.scrollHeight;
   }
 
-  function renderUser(text) {
+  function renderUser(text, save = true) {
     const wrapper = document.createElement('div');
     wrapper.className = 'message user';
     const content = document.createElement('div');
@@ -78,9 +117,13 @@ document.addEventListener('DOMContentLoaded', () => {
     wrapper.appendChild(content);
     messages.appendChild(wrapper);
     scrollToBottom();
+    if (save) {
+      messageHistory.push({ sender: 'user', text });
+      saveChat();
+    }
   }
 
-  function renderBot(text) {
+  function renderBot(text, save = true) {
     const wrapper = document.createElement('div');
     wrapper.className = 'message bot';
     const content = document.createElement('div');
@@ -89,6 +132,10 @@ document.addEventListener('DOMContentLoaded', () => {
     wrapper.appendChild(content);
     messages.appendChild(wrapper);
     scrollToBottom();
+    if (save) {
+      messageHistory.push({ sender: 'bot', text });
+      saveChat();
+    }
   }
 
   function botSay(text) {
@@ -108,6 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderQuickReplies(options) {
     quickReplies.innerHTML = '';
+    lastQuickReplies = options;
     options.forEach(opt => {
       const btn = document.createElement('button');
       btn.type = 'button';
@@ -117,11 +165,14 @@ document.addEventListener('DOMContentLoaded', () => {
         quickReplies.querySelectorAll('button').forEach(b => b.disabled = true);
         renderUser(opt.label);
         quickReplies.innerHTML = '';
+        lastQuickReplies = [];
+        saveChat();
         applyAnswer(opt.value);
       });
       quickReplies.appendChild(btn);
     });
     scrollToBottom();
+    saveChat();
   }
 
   function classifyDomain(text) {
@@ -205,7 +256,10 @@ document.addEventListener('DOMContentLoaded', () => {
     quickReplies.innerHTML = '';
     userInput.value = '';
     chat = new ChatState();
+    messageHistory = [];
+    lastQuickReplies = [];
     localStorage.removeItem(LGPD_KEY);
+    localStorage.removeItem(CHAT_KEY);
     showConsent();
   }
 
