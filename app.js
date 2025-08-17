@@ -33,6 +33,8 @@ document.addEventListener('DOMContentLoaded', () => {
       this.pendingFlags = [];
       this.answeredCount = 0;
       this.answers = {};
+      this.symptomsOffered = false;
+      this.pendingIntake = '';
     }
   }
 
@@ -194,7 +196,7 @@ document.addEventListener('DOMContentLoaded', () => {
   startBtn.addEventListener('click', () => {
     localStorage.setItem(LGPD_KEY, 'true');
     hideConsent();
-    renderSymptoms();
+    beginIntake();
   });
 
   symptomForm.addEventListener('submit', e => {
@@ -207,12 +209,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (txt) botSay(txt);
       });
     }
-    beginIntake();
+    if (chat.pendingIntake) {
+      const pending = chat.pendingIntake;
+      chat.pendingIntake = '';
+      handleIntake(pending);
+    } else {
+      beginIntake();
+    }
   });
 
   skipSymptomsBtn.addEventListener('click', () => {
     symptomOverlay.style.display = 'none';
-    beginIntake();
+    if (chat.pendingIntake) {
+      const pending = chat.pendingIntake;
+      chat.pendingIntake = '';
+      handleIntake(pending);
+    } else {
+      beginIntake();
+    }
   });
 
   function scrollToBottom() {
@@ -413,6 +427,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function handleIntake(text) {
+    if (!chat.symptomsOffered) {
+      chat.symptomsOffered = true;
+      chat.pendingIntake = text;
+      saveChat();
+      renderSymptoms();
+      return;
+    }
     chat.state = 'CLASSIFY';
     const result = classifyDomain(text, rules);
     if (result.domain === 'outro' || result.confidence < 0.4) {
