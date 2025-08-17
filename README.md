@@ -35,8 +35,7 @@ avaliação médica presencial.
 
 ## Estrutura do Projeto
 
-- `index.html` – marcação HTML da interface.
-- `styles.css` – estilos visuais.
+- `index.html` – marcação da interface e estilos básicos.
 - `app.js` – lógica de interação do chat.
 - `rules_otorrino.json` – regras de triagem utilizadas pelo chat.
 - `validate_rules.py` – script para validar o arquivo de regras.

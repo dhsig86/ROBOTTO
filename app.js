@@ -111,21 +111,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderUser(text, save = true, time = new Date().toLocaleTimeString()) {
     const wrapper = document.createElement('div');
-    wrapper.className = 'message user';
+    wrapper.className = 'mb-4 flex items-end flex-row-reverse';
 
     const avatar = document.createElement('span');
-    avatar.className = 'avatar';
+    avatar.className = 'mx-2 text-2xl';
     avatar.textContent = '🧑';
 
     const bubble = document.createElement('div');
-    bubble.className = 'bubble';
+    bubble.className = 'flex flex-col items-end';
 
     const content = document.createElement('div');
-    content.className = 'content';
+    content.className = 'w-fit max-w-[90%] rounded-lg bg-blue-300 p-3 leading-snug text-black';
     content.textContent = text;
 
     const timestamp = document.createElement('span');
-    timestamp.className = 'timestamp';
+    timestamp.className = 'mt-1 text-xs text-gray-600';
     timestamp.textContent = time;
 
     bubble.appendChild(content);
@@ -142,21 +142,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderBot(text, save = true, time = new Date().toLocaleTimeString()) {
     const wrapper = document.createElement('div');
-    wrapper.className = 'message bot';
+    wrapper.className = 'mb-4 flex items-end';
 
     const avatar = document.createElement('span');
-    avatar.className = 'avatar';
+    avatar.className = 'mx-2 text-2xl';
     avatar.textContent = '🤖';
 
     const bubble = document.createElement('div');
-    bubble.className = 'bubble';
+    bubble.className = 'flex flex-col items-start';
 
     const content = document.createElement('div');
-    content.className = 'content';
+    content.className = 'w-fit max-w-[90%] rounded-lg bg-gray-100 p-3 leading-snug text-black';
     content.textContent = text;
 
     const timestamp = document.createElement('span');
-    timestamp.className = 'timestamp';
+    timestamp.className = 'mt-1 text-xs text-gray-600';
     timestamp.textContent = time;
 
     bubble.appendChild(content);
@@ -173,14 +173,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function botSay(text) {
     const temp = document.createElement('div');
-    temp.className = 'message bot';
+    temp.className = 'mb-4 flex items-end';
     const content = document.createElement('div');
-    content.className = 'content';
+    content.className = 'w-fit max-w-[90%] rounded-lg bg-gray-100 p-3 leading-snug text-black';
     const indicator = document.createElement('div');
-    indicator.className = 'typing';
+    indicator.className = 'flex gap-1';
     for (let i = 0; i < 3; i++) {
       const dot = document.createElement('span');
-      dot.className = 'typing-dot';
+      dot.className = 'h-2 w-2 rounded-full bg-gray-400 animate-[blink_1.4s_infinite_both]';
+      dot.style.animationDelay = `${i * 0.2}s`;
       indicator.appendChild(dot);
     }
     content.appendChild(indicator);
