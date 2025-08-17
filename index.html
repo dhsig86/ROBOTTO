@@ -56,6 +56,17 @@
     </div>
   </div>
 
+  <div id="symptom-overlay" class="fixed inset-0 z-40 flex items-center justify-center bg-black/50" role="dialog" aria-modal="true" style="display:none">
+    <form id="symptom-form" class="mx-4 w-full max-w-md rounded bg-white p-4 space-y-4 text-left dark:bg-gray-800">
+      <h2 class="text-center text-sm font-semibold">Sintomas atuais</h2>
+      <div id="symptom-options" class="max-h-60 overflow-y-auto space-y-2"></div>
+      <div class="flex justify-end gap-2">
+        <button type="button" id="skip-symptoms" class="rounded border px-3 py-1">Pular</button>
+        <button type="submit" class="rounded bg-blue-600 px-3 py-1 text-white">Continuar</button>
+      </div>
+    </form>
+  </div>
+
   <script src="classifier.js"></script>
   <script src="app.js"></script>
 </body>

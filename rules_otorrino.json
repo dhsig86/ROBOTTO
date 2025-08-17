@@ -606,10 +606,34 @@
         ],
         "safety_net": [
           "Se a rouquidão passar de 3–4 semanas, se houver engasgos frequentes, sangue na saliva ou perda de peso: avaliação especializada.",
-          "Falta de ar: emergência."
-        ]
-      }
+      "Falta de ar: emergência."
+      ]
     }
+  }
+  },
+  "guidelines": {
+    "Febre": "Mantenha-se hidratado e procure avaliação se durar mais de 3 dias.",
+    "Tosse": "Beba água e evite ambientes com fumaça.",
+    "Dor de cabeça": "Descanse em local calmo; procure atendimento se intensa ou persistente.",
+    "Nariz entupido": "Lave o nariz com soro fisiológico.",
+    "Coriza ou Catarro": "Hidrate-se e assoe o nariz suavemente.",
+    "Mau cheiro": "Pode indicar infecção; mantenha higiene e procure médico se persistente.",
+    "Redução do Olfato": "Evite substâncias irritantes; busque avaliação se não melhorar.",
+    "Redução do Paladar": "Mantenha alimentação leve; procure avaliação se persistente.",
+    "Pressão na face": "Inale vapor de água morna; busque atendimento se houver febre ou dor intensa.",
+    "Dor de Ouvido": "Evite molhar o ouvido e procure avaliação se não passar.",
+    "Sensação de ouvido tapado": "Evite introduzir objetos; procure se não aliviar.",
+    "Coceira no ouvido": "Não use cotonetes; mantenha o local seco.",
+    "Dificuldade de ouvir": "Evite ruídos altos; procure avaliação auditiva.",
+    "Zumbido": "Reduza cafeína e álcool; procure otorrino se persistente.",
+    "Tontura": "Sente-se ou deite-se até passar; se houver outros sintomas graves, procure emergência.",
+    "Sensação de Desmaio": "Deite-se e levante as pernas; se persistir, busque atendimento.",
+    "Dor de Garganta": "Faça gargarejos com água morna e sal; procure se houver pus ou febre alta.",
+    "Mau Hálito": "Mantenha boa higiene oral e hidratação.",
+    "Sensação de Bolo na garganta": "Evite alimentos irritantes; procure avaliação se persistente.",
+    "Dificuldade ou Desconforto para engolir": "Prefira alimentos macios e procure atendimento se dificultar alimentação.",
+    "Aumento dos gânglios do pescoço": "Observe se reduzem em alguns dias; se dolorosos ou persistentes, busque avaliação.",
+    "Roncos": "Tente dormir de lado e manter peso saudável."
   },
   "logic": {
     "domain_classification_keywords": {

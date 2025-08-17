@@ -95,6 +95,29 @@ def validate_logic(data: dict) -> List[str]:
     return errors
 
 
+def validate_guidelines(data: dict) -> List[str]:
+    """Valida presença de guidelines para cada sintoma"""
+    errors: List[str] = []
+    guidelines = data.get("guidelines")
+    if not isinstance(guidelines, dict):
+        return ["guidelines deve ser um objeto com textos"]
+
+    symptoms_section = None
+    for section in data.get("intake", {}).get("sections", []):
+        if section.get("id") == "symptoms":
+            symptoms_section = section
+            break
+
+    if symptoms_section:
+        checklist = next((f for f in symptoms_section.get("fields", []) if f.get("id") == "symptom_checklist"), None)
+        if checklist:
+            for choice in checklist.get("choices", []):
+                text = guidelines.get(choice)
+                if not isinstance(text, str) or not text.strip():
+                    errors.append(f"guidelines ausente ou vazio para sintoma: {choice}")
+    return errors
+
+
 def validate(path: Path) -> bool:
     """Executa todas as validações e retorna True se o arquivo for válido."""
     try:
@@ -109,6 +132,7 @@ def validate(path: Path) -> bool:
         validate_logic,
         validate_unique_redflag_ids,
         validate_self_care,
+        validate_guidelines,
     )
     for validator in validators:
         errors.extend(validator(data))
