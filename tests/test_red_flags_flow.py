@@ -12,7 +12,7 @@ def run_node(code: str) -> str:
     return result.stdout.strip()
 
 
-def test_classification_after_symptoms():
+def test_red_flags_selection():
     subprocess.run(["npm", "install", "jsdom"], check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     script = dedent(
         """
@@ -62,18 +62,26 @@ def test_classification_after_symptoms():
 
         (async () => {
             await new Promise(r => setTimeout(r, 0));
-            mod.handleIntake('nariz entupido');
+            mod.handleIntake('dor de ouvido');
             await new Promise(r => setTimeout(r, 0));
             const symptomForm = document.getElementById('symptom-form');
             const first = symptomForm.querySelector('input[name="symptom"]');
             first.checked = true;
             symptomForm.dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
+            await new Promise(r => setTimeout(r, 700));
+            const flagForm = document.getElementById('flag-form');
+            const inputs = flagForm.querySelectorAll('input[name="flag"]');
+            inputs[0].checked = true;
+            inputs[1].checked = true;
+            flagForm.dispatchEvent(new window.Event('submit', { bubbles: true, cancelable: true }));
             await new Promise(r => setTimeout(r, 0));
-            console.log(JSON.stringify({ state: mod.chat.state, domain: mod.chat.domain }));
+            console.log(JSON.stringify({ answers: mod.chat.answers, count: mod.chat.flags.length, state: mod.chat.state }));
         })();
         """
     )
     out = run_node(script)
     data = json.loads(out)
-    assert data["domain"] == "nariz"
-    assert data["state"] == "ASK_FLAGS"
+    assert data["count"] == len(data["answers"])
+    assert list(v for v in data["answers"].values()).count("Sim") >= 2
+    assert data["state"] == "END"
+
