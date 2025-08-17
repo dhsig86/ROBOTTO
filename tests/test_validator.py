@@ -89,3 +89,10 @@ def test_empty_guideline_fail(tmp_path):
     data["guidelines"][sym] = ""
     path = write_temp(tmp_path, data)
     assert validate(path) is False
+
+
+def test_missing_guidelines_block_fail(tmp_path):
+    data = load_base()
+    data.pop("guidelines", None)
+    path = write_temp(tmp_path, data)
+    assert validate(path) is False

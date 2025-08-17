@@ -12,7 +12,15 @@ import json
 from pathlib import Path
 from typing import Iterable, List
 
-REQUIRED_KEYS = {"version", "locale", "legal", "intake", "domains", "logic"}
+REQUIRED_KEYS = {
+    "version",
+    "locale",
+    "legal",
+    "intake",
+    "domains",
+    "logic",
+    "guidelines",
+}
 REQUIRED_ANSWER_OPTIONS = {"Sim", "Não"}
 
 

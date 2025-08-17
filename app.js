@@ -206,7 +206,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (selected.length) {
       selected.forEach(sym => {
         const txt = rules?.guidelines?.[sym];
-        if (txt) botSay(txt);
+        if (txt) {
+          botSay(`Para ${sym}: ${txt}`);
+        }
       });
     }
     if (chat.pendingIntake) {
