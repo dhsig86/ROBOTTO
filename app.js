@@ -333,7 +333,17 @@ document.addEventListener('DOMContentLoaded', () => {
   function escalate(flag) {
     const levels = rules.logic?.escalation_levels || {};
     const level = levels[flag.urgency] || {};
-    const msg = `${flag.on_true?.message || ''} ${level.cta || ''}`.trim();
+    const parts = [flag.on_true?.message];
+    if (flag.on_true?.self_care) {
+      const care = Array.isArray(flag.on_true.self_care)
+        ? flag.on_true.self_care.join(' ')
+        : flag.on_true.self_care;
+      parts.push(care);
+    }
+    if (level.cta) {
+      parts.push(level.cta);
+    }
+    const msg = parts.filter(Boolean).join(' ').trim();
     botSay(msg);
     chat.state = 'END';
     progressBar.value = 0;

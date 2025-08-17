@@ -59,6 +59,26 @@ def validate_unique_redflag_ids(data: dict) -> List[str]:
     return []
 
 
+def validate_self_care(data: dict) -> List[str]:
+    """Valida o campo opcional self_care dentro de on_true."""
+    errors: List[str] = []
+
+    def check(flags: List[dict], prefix: str) -> None:
+      for idx, item in enumerate(flags):
+        on_true = item.get("on_true", {})
+        if "self_care" in on_true:
+          sc = on_true["self_care"]
+          if not isinstance(sc, list) or not all(isinstance(x, str) for x in sc):
+            errors.append(
+                f"{prefix}[{idx}].on_true.self_care deve ser lista de strings")
+
+    check(data.get("global_red_flags", []), "global_red_flags")
+    for domain_name, domain in data.get("domains", {}).items():
+      check(domain.get("red_flags", []), f"domains.{domain_name}.red_flags")
+
+    return errors
+
+
 def validate_logic(data: dict) -> List[str]:
     """Valida regras específicas de lógica."""
     errors: List[str] = []
@@ -88,6 +108,7 @@ def validate(path: Path) -> bool:
         validate_required_keys,
         validate_logic,
         validate_unique_redflag_ids,
+        validate_self_care,
     )
     for validator in validators:
         errors.extend(validator(data))
