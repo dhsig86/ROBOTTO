@@ -51,3 +51,18 @@ def test_missing_answer_options_fail(tmp_path):
     data["logic"]["answer_options"] = ["Talvez"]
     path = write_temp(tmp_path, data)
     assert validate(path) is False
+
+
+def test_self_care_optional(tmp_path):
+    data = load_base()
+    # remove self_care from first flag; still valid
+    data["global_red_flags"][0]["on_true"].pop("self_care", None)
+    path = write_temp(tmp_path, data)
+    assert validate(path) is True
+
+
+def test_self_care_wrong_type_fail(tmp_path):
+    data = load_base()
+    data["global_red_flags"][0]["on_true"]["self_care"] = "beber agua"
+    path = write_temp(tmp_path, data)
+    assert validate(path) is False
