@@ -32,8 +32,30 @@ body {
 
 .message {
   display: flex;
-  flex-direction: column;
   margin-bottom: 1rem;
+  align-items: flex-end;
+}
+
+.message.user {
+  flex-direction: row-reverse;
+}
+
+.message .avatar {
+  font-size: 1.5rem;
+  margin: 0 0.5rem;
+}
+
+.bubble {
+  display: flex;
+  flex-direction: column;
+}
+
+.message.bot .bubble {
+  align-items: flex-start;
+}
+
+.message.user .bubble {
+  align-items: flex-end;
 }
 
 .message .content {
@@ -47,12 +69,16 @@ body {
 
 .message.bot .content {
   background: var(--bot-color);
-  align-self: flex-start;
 }
 
 .message.user .content {
   background: var(--user-color);
-  align-self: flex-end;
+}
+
+.timestamp {
+  font-size: 0.75rem;
+  color: #666;
+  margin-top: 0.25rem;
 }
 
 .message .disclaimer {
