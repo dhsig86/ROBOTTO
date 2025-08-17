@@ -22,7 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
       this.domain = '';
       this.flags = [];
       this.flagIndex = 0;
-      this.currentFlag = null;
+      this.pendingFlags = [];
+      this.answeredCount = 0;
+      this.answers = {};
     }
   }
 
@@ -231,19 +233,32 @@ document.addEventListener('DOMContentLoaded', () => {
       showAdvice();
       return;
     }
-    const progress = (chat.flagIndex + 1) / chat.flags.length;
-    progressBar.value = progress;
-    chat.currentFlag = chat.flags[chat.flagIndex++];
-    botSay(chat.currentFlag.question);
+    chat.pendingFlags = [];
+    const batchSize = Math.min(rules?.logic?.ask_batch_size || 1, 3);
+    while (chat.flagIndex < chat.flags.length && chat.pendingFlags.length < batchSize) {
+      const flag = chat.flags[chat.flagIndex++];
+      chat.pendingFlags.push(flag);
+      botSay(flag.question);
+    }
     const opts = (rules.logic?.answer_options || []).map(o => ({ label: o, value: o }));
     renderQuickReplies(opts);
   }
 
   function applyAnswer(value) {
     if (chat.state !== 'ASK_FLAGS') return;
+    const flag = chat.pendingFlags.shift();
+    if (!flag) return;
+    chat.answers[flag.id] = value;
+    chat.answeredCount++;
+    progressBar.value = chat.answeredCount / chat.flags.length;
     if (value === 'Sim') {
       chat.state = 'ESCALATE';
-      escalate(chat.currentFlag);
+      escalate(flag);
+      return;
+    }
+    if (chat.pendingFlags.length) {
+      const opts = (rules.logic?.answer_options || []).map(o => ({ label: o, value: o }));
+      renderQuickReplies(opts);
     } else {
       askNextFlag();
     }
@@ -279,6 +294,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const domainFlags = rules?.domains?.[chat.domain]?.red_flags || [];
     chat.flags = chat.flags.concat(domainFlags);
     chat.flagIndex = 0;
+    chat.pendingFlags = [];
+    chat.answeredCount = 0;
+    chat.answers = {};
     chat.state = 'ASK_FLAGS';
     setTimeout(askNextFlag, 600);
   }
