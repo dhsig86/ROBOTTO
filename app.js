@@ -414,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function handleIntake(text) {
     chat.state = 'CLASSIFY';
-    const result = classifyDomain(text);
+    const result = classifyDomain(text, rules);
     if (result.domain === 'outro' || result.confidence < 0.4) {
       botSay('Não consegui identificar o domínio. Pode explicar melhor?');
       chat.state = 'INTAKE';

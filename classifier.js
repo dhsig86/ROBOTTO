@@ -44,7 +44,7 @@ function preprocessDomainKeywords(rules) {
   rules._domainKeywords = processed;
 }
 
-function classifyDomain(text, r = rules) {
+function classifyDomain(text, r) {
   const map = r?._domainKeywords || {};
   const normText = normalize(text);
   const tokens = normText.split(/\s+/);
