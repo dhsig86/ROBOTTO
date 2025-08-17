@@ -42,6 +42,14 @@ avaliação médica presencial.
 - `rules_otorrino.json` – regras de triagem utilizadas pelo chat.
 - `validate_rules.py` – script para validar o arquivo de regras.
 
+## Envio de resultados
+
+Ao final da triagem, o botão **Enviar para médico** permite compartilhar o resumo:
+
+- Se a variável global `DOCTOR_ENDPOINT` estiver definida, os dados são enviados via requisição `POST` para esse endpoint.
+- Caso contrário, o envio é apenas simulado: é gerado um link `mailto:` com o resumo e um arquivo `triagem.json` é oferecido para download manual.
+- Nessa situação, uma mensagem informa ao usuário que o envio não foi feito automaticamente.
+
 ## Execução Local
 
 Por ser uma aplicação estática, basta abrir `index.html` em um navegador

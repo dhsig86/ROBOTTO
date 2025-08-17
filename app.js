@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const RULES_KEY = 'otto-rules';
   const TIMESTAMP_KEY = 'otto-chat-ts';
   const MAX_CHAT_AGE = 30 * 24 * 60 * 60 * 1000; // 30 dias
-  const DOCTOR_ENDPOINT = window.DOCTOR_ENDPOINT || '/api/send-results';
+  const DOCTOR_ENDPOINT = window.DOCTOR_ENDPOINT;
 
   let rules = null;
 
@@ -461,6 +461,32 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   async function sendResultsToDoctor(resumo) {
+    if (!DOCTOR_ENDPOINT) {
+      const json = JSON.stringify(resumo, null, 2);
+      const subject = encodeURIComponent('Resumo da triagem');
+      const body = encodeURIComponent(`Segue resumo da triagem:\n\n${json}`);
+
+      const mail = document.createElement('a');
+      mail.href = `mailto:?subject=${subject}&body=${body}`;
+      mail.style.display = 'none';
+      document.body.appendChild(mail);
+      mail.click();
+      document.body.removeChild(mail);
+
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const dl = document.createElement('a');
+      dl.href = url;
+      dl.download = 'triagem.json';
+      document.body.appendChild(dl);
+      dl.click();
+      document.body.removeChild(dl);
+      URL.revokeObjectURL(url);
+
+      botSay('Envio simulado. Um e-mail foi preparado e o arquivo pode ser baixado para compartilhar com um profissional.');
+      return;
+    }
+
     try {
       await fetch(DOCTOR_ENDPOINT, {
         method: 'POST',
