@@ -242,6 +242,15 @@ document.addEventListener('DOMContentLoaded', () => {
       btn.type = 'button';
       btn.className = 'rounded border px-3 py-1';
       btn.textContent = opt.label;
+      // Acessibilidade: rótulo e navegação por teclado
+      btn.setAttribute('aria-label', opt.ariaLabel || opt.label);
+      btn.tabIndex = 0;
+      btn.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          btn.click();
+        }
+      });
       btn.addEventListener('click', () => {
         quickReplies.querySelectorAll('button').forEach(b => b.disabled = true);
         renderUser(opt.label);
@@ -256,6 +265,8 @@ document.addEventListener('DOMContentLoaded', () => {
       });
       quickReplies.appendChild(btn);
     });
+    const firstBtn = quickReplies.querySelector('button');
+    if (firstBtn) firstBtn.focus();
     scrollToBottom();
     saveChat();
   }
