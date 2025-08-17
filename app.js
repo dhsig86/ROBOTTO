@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const LGPD_KEY = 'rob-accept-lgpd';
   const THEME_KEY = 'otto-theme';
   const CHAT_KEY = 'otto-chat';
+  const RULES_KEY = 'otto-rules';
 
   let rules = null;
 
@@ -51,10 +52,36 @@ document.addEventListener('DOMContentLoaded', () => {
     localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
   });
 
+  function disableInteraction() {
+    userInput.disabled = true;
+    inputForm.querySelector('button').disabled = true;
+    inputForm.classList.add('opacity-50');
+    startBtn.disabled = true;
+    startBtn.classList.add('opacity-50');
+  }
+
   // Carrega regras apenas uma vez
   fetch('rules_otorrino.json')
     .then(r => r.json())
-    .then(data => { rules = data; });
+    .then(data => {
+      rules = data;
+      localStorage.setItem(RULES_KEY, JSON.stringify(data));
+    })
+    .catch(err => {
+      console.error('Erro ao carregar regras:', err);
+      const cached = localStorage.getItem(RULES_KEY);
+      if (cached) {
+        try {
+          rules = JSON.parse(cached);
+          botSay('Usando regras em cache offline.');
+          return;
+        } catch (e) {
+          console.error('Erro ao carregar cache de regras:', e);
+        }
+      }
+      botSay('Não foi possível carregar as regras. Verifique sua conexão e recarregue a página.');
+      disableInteraction();
+    });
 
   // Consentimento
   function showConsent() { consentOverlay.style.display = 'flex'; }
