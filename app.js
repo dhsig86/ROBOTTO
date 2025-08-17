@@ -1,3 +1,5 @@
+if (typeof module !== 'undefined') module.exports = {};
+
 document.addEventListener('DOMContentLoaded', () => {
   const messagesEl = document.getElementById('messages');
   const quickReplies = document.getElementById('quick-replies');
@@ -210,38 +212,22 @@ document.addEventListener('DOMContentLoaded', () => {
     symptomOverlay.style.display = 'none';
     chat.symptoms = selected;
     saveChat();
-    if (editingSymptoms) {
-      editingSymptoms = false;
-      return;
-    }
-    if (chat.pendingIntake) {
-      const pending = chat.pendingIntake;
-      chat.pendingIntake = '';
-      handleIntake(pending);
-    } else if (chat.state === 'ASK_FLAGS') {
-      askNextFlag();
-    } else {
-      beginIntake();
-    }
+
+    const pending = chat.pendingIntake;
+    chat.pendingIntake = '';
+    handleIntake(pending);
+
   });
 
   skipSymptomsBtn.addEventListener('click', () => {
     symptomOverlay.style.display = 'none';
     chat.symptoms = [];
     saveChat();
-    if (editingSymptoms) {
-      editingSymptoms = false;
-      return;
-    }
-    if (chat.pendingIntake) {
-      const pending = chat.pendingIntake;
-      chat.pendingIntake = '';
-      handleIntake(pending);
-    } else if (chat.state === 'ASK_FLAGS') {
-      askNextFlag();
-    } else {
-      beginIntake();
-    }
+
+    const pending = chat.pendingIntake;
+    chat.pendingIntake = '';
+    handleIntake(pending);
+
   });
 
   reviewSymptomsBtn.addEventListener('click', () => {
@@ -489,6 +475,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function handleIntake(text) {
+    if (!text) {
+      if (chat.pendingIntake) {
+        text = chat.pendingIntake;
+        chat.pendingIntake = '';
+      } else {
+        return;
+      }
+    }
     if (!chat.symptomsOffered) {
       chat.symptomsOffered = true;
       chat.pendingIntake = text;
@@ -570,4 +564,9 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   resetBtn.addEventListener('click', reset);
+
+  if (typeof module !== 'undefined') {
+    module.exports.handleIntake = handleIntake;
+    module.exports.chat = chat;
+  }
 });
