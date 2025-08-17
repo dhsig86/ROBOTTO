@@ -176,9 +176,52 @@
   },
   "logic": {
     "domain_classification_keywords": {
-      "ouvido": ["ouvido", "otalgia", "zumbido", "hipoacusia", "tontura", "vertigem", "otorréia", "ouço pior"],
-      "nariz": ["nariz", "epistaxe", "sangramento", "congestão", "coriza", "rinite", "sinusite", "pressão na face"],
-      "laringe": ["rouquidão", "disfonia", "garganta", "engolir", "disfagia", "globus", "via aérea", "estridor", "roncos"]
+      "ouvido": [
+        "ouvido",
+        "orelha",
+        "otalgia",
+        "zumbido",
+        "hipoacusia",
+        "tontura",
+        "vertigem",
+        "otorréia",
+        "ouço pior",
+        "dor de ouvido",
+        "dor no ouvido",
+        "audicao",
+        "otite",
+        "/ouvid[oa]\\s*dor/"
+      ],
+      "nariz": [
+        "nariz",
+        "epistaxe",
+        "sangramento",
+        "congestão",
+        "coriza",
+        "rinite",
+        "sinusite",
+        "pressão na face",
+        "nariz entupido",
+        "sangue no nariz",
+        "narina",
+        "espirro",
+        "/sangrament[oa].*nariz/"
+      ],
+      "laringe": [
+        "rouquidão",
+        "disfonia",
+        "garganta",
+        "engolir",
+        "disfagia",
+        "globus",
+        "via aérea",
+        "estridor",
+        "roncos",
+        "voz fraca",
+        "dor de garganta",
+        "engasgo",
+        "/dificuldade.*falar/"
+      ]
     },
     "pain_escalation_threshold": 8,
     "ask_batch_size": 3,

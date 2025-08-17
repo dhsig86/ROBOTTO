@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     constructor() {
       this.state = 'CONSENT';
       this.domain = '';
+      this.proposedDomain = '';
       this.flags = [];
       this.flagIndex = 0;
       this.pendingFlags = [];
@@ -247,7 +248,11 @@ document.addEventListener('DOMContentLoaded', () => {
         quickReplies.innerHTML = '';
         lastQuickReplies = [];
         saveChat();
-        applyAnswer(opt.value);
+        if (chat.state === 'CONFIRM_DOMAIN') {
+          applyDomainConfirmation(opt.value);
+        } else {
+          applyAnswer(opt.value);
+        }
       });
       quickReplies.appendChild(btn);
     });
@@ -255,13 +260,55 @@ document.addEventListener('DOMContentLoaded', () => {
     saveChat();
   }
 
+  function normalize(str) {
+    return str
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase();
+  }
+
+  function levenshtein(a, b) {
+    const matrix = Array.from({ length: b.length + 1 }, () => []);
+    for (let i = 0; i <= b.length; i++) matrix[i][0] = i;
+    for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+    for (let i = 1; i <= b.length; i++) {
+      for (let j = 1; j <= a.length; j++) {
+        const cost = b[i - 1] === a[j - 1] ? 0 : 1;
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j - 1] + cost
+        );
+      }
+    }
+    return matrix[b.length][a.length];
+  }
+
+  function similarity(a, b) {
+    const dist = levenshtein(a, b);
+    return 1 - dist / Math.max(a.length, b.length);
+  }
+
   function classifyDomain(text) {
     const map = rules?.logic?.domain_classification_keywords || {};
-    const lower = text.toLowerCase();
+    const normText = normalize(text);
+    let best = { domain: 'outro', score: 0 };
     for (const [domain, keywords] of Object.entries(map)) {
-      if (keywords.some(k => lower.includes(k))) return domain;
+      for (const kw of keywords) {
+        if (kw.startsWith('/') && kw.endsWith('/')) {
+          const re = new RegExp(kw.slice(1, -1), 'i');
+          if (re.test(normText)) return { domain, confidence: 1 };
+          continue;
+        }
+        const normKw = normalize(kw);
+        if (normText.includes(normKw)) return { domain, confidence: 1 };
+        for (const word of normText.split(/\s+/)) {
+          const score = similarity(word, normKw);
+          if (score > best.score) best = { domain, score };
+        }
+      }
     }
-    return 'outro';
+    return { domain: best.domain, confidence: best.score };
   }
 
   function askNextFlag() {
@@ -325,7 +372,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function handleIntake(text) {
     chat.state = 'CLASSIFY';
-    chat.domain = classifyDomain(text);
+    const result = classifyDomain(text);
+    if (result.domain === 'outro' || result.confidence < 0.4) {
+      botSay('Não consegui identificar o domínio. Pode explicar melhor?');
+      chat.state = 'INTAKE';
+      return;
+    }
+    if (result.confidence < 0.7) {
+      chat.proposedDomain = result.domain;
+      chat.state = 'CONFIRM_DOMAIN';
+      botSay(`Você quis dizer algo relacionado a ${chat.proposedDomain}?`);
+      renderQuickReplies([
+        { label: 'Sim', value: 'Sim' },
+        { label: 'Não', value: 'Não' }
+      ]);
+      return;
+    }
+    finalizeDomain(result.domain);
+  }
+
+  function finalizeDomain(domain) {
+    chat.domain = domain;
     botSay(`Domínio identificado: ${chat.domain}.`);
     chat.flags = (rules?.global_red_flags || []).slice();
     const domainFlags = rules?.domains?.[chat.domain]?.red_flags || [];
@@ -338,6 +405,16 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(askNextFlag, 600);
   }
 
+  function applyDomainConfirmation(value) {
+    if (chat.state !== 'CONFIRM_DOMAIN') return;
+    if (value.toLowerCase() === 'sim') {
+      finalizeDomain(chat.proposedDomain);
+    } else {
+      botSay('Tudo bem, descreva novamente sua queixa principal.');
+      chat.state = 'INTAKE';
+    }
+  }
+
   inputForm.addEventListener('submit', e => {
     e.preventDefault();
     const text = userInput.value.trim();
@@ -348,6 +425,8 @@ document.addEventListener('DOMContentLoaded', () => {
       handleIntake(text);
     } else if (chat.state === 'ASK_FLAGS') {
       applyAnswer(text);
+    } else if (chat.state === 'CONFIRM_DOMAIN') {
+      applyDomainConfirmation(text);
     }
   });
 
