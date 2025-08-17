@@ -29,7 +29,7 @@ avaliação médica presencial.
 ## Regras de Triagem (rules_otorrino.json)
 
 - [rules_otorrino.json](./rules_otorrino.json) centraliza a lógica de triagem.
-- Valide o arquivo executando `python validate_rules.py`.
+- Valide o arquivo executando `python validate_rules.py --path rules_otorrino.json`.
 - Ao atualizar o campo `updated_at`, revise o JSON e peça revisão clínica via
   PR dedicado.
 
@@ -44,7 +44,16 @@ avaliação médica presencial.
 
 Por ser uma aplicação estática, basta abrir `index.html` em um navegador
 compatível. Para atualizar as regras, modifique `rules_otorrino.json` e valide o
-conteúdo com `python validate_rules.py`.
+conteúdo com `python validate_rules.py --path rules_otorrino.json`.
+
+## Validação e Testes
+
+Execute os comandos abaixo para validar o arquivo de regras e rodar os testes automatizados:
+
+```bash
+python validate_rules.py --path rules_otorrino.json
+pytest -q
+```
 
 ## Boas práticas de acessibilidade
 
