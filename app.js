@@ -9,6 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const themeToggle = document.getElementById('theme-toggle');
   const resetBtn = document.getElementById('reset-btn');
   const progressBar = document.getElementById('progress');
+  const symptomOverlay = document.getElementById('symptom-overlay');
+  const symptomForm = document.getElementById('symptom-form');
+  const symptomOptions = document.getElementById('symptom-options');
+  const skipSymptomsBtn = document.getElementById('skip-symptoms');
 
   const LGPD_KEY = 'rob-accept-lgpd';
   const THEME_KEY = 'otto-theme';
@@ -111,6 +115,36 @@ document.addEventListener('DOMContentLoaded', () => {
   function showConsent() { consentOverlay.style.display = 'flex'; }
   function hideConsent() { consentOverlay.style.display = 'none'; }
 
+  function beginIntake() {
+    chat.state = 'INTAKE';
+    saveChat();
+    botSay('Olá! Qual é a sua queixa principal?');
+  }
+
+  function renderSymptoms() {
+    const section = rules?.intake?.sections?.find(s => s.id === 'symptoms');
+    const field = section?.fields?.find(f => f.id === 'symptom_checklist');
+    if (!field) {
+      beginIntake();
+      return;
+    }
+    symptomOptions.innerHTML = '';
+    field.choices.forEach(choice => {
+      const label = document.createElement('label');
+      label.className = 'flex items-center space-x-2';
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.value = choice;
+      input.name = 'symptom';
+      label.appendChild(input);
+      const span = document.createElement('span');
+      span.textContent = choice;
+      label.appendChild(span);
+      symptomOptions.appendChild(label);
+    });
+    symptomOverlay.style.display = 'flex';
+  }
+
   let savedChat = localStorage.getItem(CHAT_KEY);
   const savedTimestamp = parseInt(localStorage.getItem(TIMESTAMP_KEY), 10);
   if (savedTimestamp && Date.now() - savedTimestamp > MAX_CHAT_AGE) {
@@ -160,9 +194,25 @@ document.addEventListener('DOMContentLoaded', () => {
   startBtn.addEventListener('click', () => {
     localStorage.setItem(LGPD_KEY, 'true');
     hideConsent();
-    chat.state = 'INTAKE';
-    saveChat();
-    botSay('Olá! Qual é a sua queixa principal?');
+    renderSymptoms();
+  });
+
+  symptomForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const selected = Array.from(symptomForm.querySelectorAll('input[name="symptom"]:checked')).map(i => i.value);
+    symptomOverlay.style.display = 'none';
+    if (selected.length) {
+      selected.forEach(sym => {
+        const txt = rules?.guidelines?.[sym];
+        if (txt) botSay(txt);
+      });
+    }
+    beginIntake();
+  });
+
+  skipSymptomsBtn.addEventListener('click', () => {
+    symptomOverlay.style.display = 'none';
+    beginIntake();
   });
 
   function scrollToBottom() {
