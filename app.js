@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const symptomForm = document.getElementById('symptom-form');
   const symptomOptions = document.getElementById('symptom-options');
   const skipSymptomsBtn = document.getElementById('skip-symptoms');
+  const reviewSymptomsBtn = document.getElementById('review-symptoms');
 
   const LGPD_KEY = 'rob-accept-lgpd';
   const THEME_KEY = 'otto-theme';
@@ -45,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let chat = new ChatState();
   let messageHistory = [];
   let lastQuickReplies = [];
+  let editingSymptoms = false;
 
   function saveChat() {
     const data = {
@@ -127,7 +129,7 @@ document.addEventListener('DOMContentLoaded', () => {
     botSay(messages.greeting);
   }
 
-  function renderSymptoms() {
+  function renderSymptoms(prefill = false) {
     const section = rules?.intake?.sections?.find(s => s.id === 'symptoms');
     const field = section?.fields?.find(f => f.id === 'symptom_checklist');
     if (!field) {
@@ -142,6 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
       input.type = 'checkbox';
       input.value = choice;
       input.name = 'symptom';
+      if (prefill && chat.symptoms.includes(choice)) input.checked = true;
       label.appendChild(input);
       const span = document.createElement('span');
       span.textContent = choice;
@@ -209,18 +212,27 @@ document.addEventListener('DOMContentLoaded', () => {
     symptomOverlay.style.display = 'none';
     chat.symptoms = selected;
     saveChat();
+
     const pending = chat.pendingIntake;
     chat.pendingIntake = '';
     handleIntake(pending);
+
   });
 
   skipSymptomsBtn.addEventListener('click', () => {
     symptomOverlay.style.display = 'none';
     chat.symptoms = [];
     saveChat();
+
     const pending = chat.pendingIntake;
     chat.pendingIntake = '';
     handleIntake(pending);
+
+  });
+
+  reviewSymptomsBtn.addEventListener('click', () => {
+    editingSymptoms = true;
+    renderSymptoms(true);
   });
 
   function scrollToBottom() {
