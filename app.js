@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
   function beginIntake() {
     chat.state = 'INTAKE';
     saveChat();
-    botSay('Olá! Qual é a sua queixa principal?');
+    botSay(messages.greeting);
   }
 
   function renderSymptoms() {
@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
       chat.state = 'INTAKE';
       hideConsent();
       saveChat();
-      botSay('Olá! Qual é a sua queixa principal?');
+      botSay(messages.greeting);
     } else {
       showConsent();
     }
@@ -437,14 +437,14 @@ document.addEventListener('DOMContentLoaded', () => {
     chat.state = 'CLASSIFY';
     const result = classifyDomain(text, rules);
     if (result.domain === 'outro' || result.confidence < 0.4) {
-      botSay('Não consegui identificar o domínio. Pode explicar melhor?');
+      botSay(messages.classificationError);
       chat.state = 'INTAKE';
       return;
     }
     if (result.confidence < 0.7) {
       chat.proposedDomain = result.domain;
       chat.state = 'CONFIRM_DOMAIN';
-      botSay(`Você quis dizer algo relacionado a ${chat.proposedDomain}?`);
+      botSay(messages.confirmDomain(chat.proposedDomain));
       renderQuickReplies([
         { label: 'Sim', value: 'Sim' },
         { label: 'Não', value: 'Não' }
@@ -473,7 +473,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (value.toLowerCase() === 'sim') {
       finalizeDomain(chat.proposedDomain);
     } else {
-      botSay('Tudo bem, descreva novamente sua queixa principal.');
+      botSay(messages.askAgain);
       chat.state = 'INTAKE';
     }
   }
