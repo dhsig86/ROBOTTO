@@ -4,8 +4,13 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Triagem Otorrino</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="styles.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      @keyframes blink {
+        0%, 80%, 100% { opacity: 0; }
+        40% { opacity: 1; }
+      }
+    </style>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900">
   <div class="mx-auto flex min-h-screen w-full max-w-md flex-col">
@@ -43,7 +48,7 @@
   <div id="consent" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50" role="dialog" aria-modal="true">
     <div class="mx-4 w-full max-w-md rounded bg-white p-4 text-center dark:bg-gray-800">
       <p class="mb-4 text-sm">Para iniciar, confirme o consentimento de uso de dados conforme a LGPD.</p>
-      <label class="consent-check mb-4 flex items-center justify-center space-x-2">
+        <label class="mb-4 flex items-center justify-center space-x-2">
         <input type="checkbox" id="lgpd-checkbox" aria-label="Confirmo consentimento" />
         <span>Li e concordo.</span>
       </label>
