@@ -36,11 +36,11 @@
     </main>
 
     <footer class="sticky bottom-0 bg-white p-4 dark:bg-gray-800">
-      <progress id="progress" value="0" max="1" class="mb-2 w-full"></progress>
-      <button id="review-symptoms" type="button" aria-label="Revisar sintomas" class="mb-2 rounded border px-3 py-1">Revisar sintomas</button>
+      <progress id="progress" value="0" max="1" class="mb-2 w-full dark:bg-gray-700"></progress>
+      <button id="review-symptoms" type="button" aria-label="Revisar sintomas" class="mb-2 rounded border px-3 py-1 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600">Revisar sintomas</button>
       <div id="quick-replies" class="mb-2 flex flex-wrap gap-2"></div>
       <form id="input-form" class="flex gap-2">
-        <input id="user-input" type="text" aria-label="Mensagem do usuário" placeholder="Digite aqui..." autocomplete="off" class="flex-1 rounded border p-2" />
+        <input id="user-input" type="text" aria-label="Mensagem do usuário" placeholder="Digite aqui..." autocomplete="off" class="flex-1 rounded border p-2 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:placeholder-gray-400" />
         <button type="submit" aria-label="Enviar mensagem" class="rounded bg-blue-600 px-4 py-2 text-white">Enviar</button>
       </form>
     </footer>
@@ -62,7 +62,7 @@
       <h2 class="text-center text-sm font-semibold">Sintomas atuais</h2>
       <div id="symptom-options" class="max-h-60 overflow-y-auto space-y-2"></div>
       <div class="flex justify-end gap-2">
-        <button type="button" id="skip-symptoms" class="rounded border px-3 py-1">Pular</button>
+        <button type="button" id="skip-symptoms" class="rounded border px-3 py-1 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600">Pular</button>
         <button type="submit" class="rounded bg-blue-600 px-3 py-1 text-white">Continuar</button>
       </div>
     </form>
