@@ -288,8 +288,9 @@
         "action": "ESCALATE",
         "message": "🚑 Falta de ar importante: busque atendimento de emergência agora.",
         "self_care": [
-          "Mantenha-se hidratado.",
-          "Evite esforços até ser avaliado."
+          "Sente-se ereto e respire lentamente.",
+          "Use inalador ou oxigênio prescrito, se disponível.",
+          "Evite esforços e mantenha o ambiente ventilado."
         ]
       }
     },
@@ -302,8 +303,9 @@
         "action": "ESCALATE",
         "message": "⚠️ Sangramento não controlado: procure atendimento presencial.",
         "self_care": [
-          "Mantenha-se hidratado.",
-          "Evite esforços até ser avaliado."
+          "Aplique pressão direta no local do sangramento.",
+          "Se for no nariz, sente-se, incline a cabeça para frente e comprima as narinas por 10 a 15 minutos.",
+          "Mantenha-se em repouso e evite engolir sangue."
         ]
       }
     },
@@ -316,7 +318,8 @@
         "action": "ESCALATE",
         "message": "⚠️ Dor muito intensa: avaliação presencial/teleconsulta prioritária.",
         "self_care": [
-          "Mantenha-se hidratado.",
+          "Descanse em local calmo.",
+          "Use analgésicos habituais se não houver contraindicação.",
           "Evite esforços até ser avaliado."
         ]
       }
@@ -330,8 +333,9 @@
         "action": "ESCALATE",
         "message": "⚠️ Alteração visual importante: procure avaliação presencial.",
         "self_care": [
-          "Mantenha-se hidratado.",
-          "Evite esforços até ser avaliado."
+          "Interrompa atividades que exijam visão precisa.",
+          "Evite dirigir ou operar máquinas.",
+          "Permaneça em local seguro até ser avaliado."
         ]
       }
     },
@@ -344,8 +348,9 @@
         "action": "ESCALATE",
         "message": "⚠️ Episódio de pré-síncope/síncope: avaliação presencial.",
         "self_care": [
-          "Mantenha-se hidratado.",
-          "Evite esforços até ser avaliado."
+          "Sente-se ou deite-se e eleve as pernas.",
+          "Mantenha o ambiente ventilado.",
+          "Hidrate-se com pequenos goles de água."
         ]
       }
     },
@@ -358,8 +363,9 @@
         "action": "ESCALATE",
         "message": "⚠️ Palpitações relevantes: agende avaliação prioritária.",
         "self_care": [
-          "Mantenha-se hidratado.",
-          "Evite esforços até ser avaliado."
+          "Sente-se ou deite-se e respire profundamente.",
+          "Evite cafeína, álcool ou outros estimulantes.",
+          "Mantenha-se calmo até ser avaliado."
         ]
       }
     }
@@ -383,8 +389,9 @@
             "action": "ESCALATE",
             "message": "⚠️ Sinal de alerta no ouvido (dor/secreção/sangue). Procure avaliação presencial/teleconsulta prioritária.",
             "self_care": [
-              "Mantenha-se hidratado.",
-              "Evite esforços até ser avaliado."
+              "Mantenha o ouvido seco e não introduza objetos.",
+              "Limpe apenas a parte externa com gaze limpa.",
+              "Evite nadar ou molhar o ouvido."
             ]
           }
         },
@@ -397,8 +404,9 @@
             "action": "ESCALATE",
             "message": "⚠️ Perda auditiva súbita/rápida: atendimento imediato.",
             "self_care": [
-              "Mantenha-se hidratado.",
-              "Evite esforços até ser avaliado."
+              "Evite ruídos altos e fones de ouvido.",
+              "Não pingue medicamentos no ouvido sem orientação.",
+              "Procure atendimento imediatamente."
             ]
           }
         },
@@ -411,8 +419,9 @@
             "action": "ESCALATE",
             "message": "⚠️ Tontura importante/recorrente: avaliação presencial.",
             "self_care": [
-              "Mantenha-se hidratado.",
-              "Evite esforços até ser avaliado."
+              "Sente-se ou deite-se assim que a tontura surgir.",
+              "Evite movimentos bruscos e locais altos.",
+              "Hidrate-se com pequenos goles de água."
             ]
           }
         },
@@ -425,8 +434,9 @@
             "action": "ESCALATE",
             "message": "⚠️ Deformidade auricular: encaminhamento prioritário.",
             "self_care": [
-              "Mantenha-se hidratado.",
-              "Evite esforços até ser avaliado."
+              "Proteja a orelha de novos traumas.",
+              "Não tente reposicionar a área afetada.",
+              "Aplique compressa fria protegida por pano se houver inchaço."
             ]
           }
         },
@@ -439,8 +449,9 @@
             "action": "ESCALATE",
             "message": "⚠️ Achado no conduto: não introduza objetos; procure avaliação.",
             "self_care": [
-              "Mantenha-se hidratado.",
-              "Evite esforços até ser avaliado."
+              "Não tente remover objetos ou secreções com hastes.",
+              "Mantenha o ouvido seco e limpo apenas por fora.",
+              "Se sangrar, cubra levemente com gaze sem pressionar."
             ]
           }
         },
@@ -453,8 +464,9 @@
             "action": "ESCALATE",
             "message": "⚠️ Perda auditiva assimétrica/unilateral: avaliação com otorrino.",
             "self_care": [
-              "Mantenha-se hidratado.",
-              "Evite esforços até ser avaliado."
+              "Evite exposição prolongada a ruídos altos.",
+              "Proteja o ouvido saudável em ambientes barulhentos.",
+              "Agende avaliação especializada."
             ]
           }
         },
@@ -467,8 +479,9 @@
             "action": "ESCALATE",
             "message": "⚠️ Zumbido unilateral/pulsátil: avaliação prioritária.",
             "self_care": [
-              "Mantenha-se hidratado.",
-              "Evite esforços até ser avaliado."
+              "Reduza cafeína, álcool e nicotina.",
+              "Evite ambientes muito silenciosos ou muito ruidosos.",
+              "Durma com a cabeça levemente elevada."
             ]
           }
         },
@@ -481,8 +494,9 @@
             "action": "ESCALATE",
             "message": "⚠️ Discriminação de fala assimétrica: avaliação com especialista.",
             "self_care": [
-              "Mantenha-se hidratado.",
-              "Evite esforços até ser avaliado."
+              "Converse em ambientes silenciosos.",
+              "Evite ruídos altos que possam piorar a audição.",
+              "Observe se há piora e procure avaliação."
             ]
           }
         }
@@ -516,8 +530,9 @@
             "action": "ESCALATE",
             "message": "⚠️ Epistaxe não controlada: procure atendimento presencial.",
             "self_care": [
-              "Mantenha-se hidratado.",
-              "Evite esforços até ser avaliado."
+              "Sente-se e incline a cabeça levemente para frente.",
+              "Comprima a parte macia do nariz por 10 a 15 minutos sem soltar.",
+              "Aplique gelo no dorso do nariz e evite assoar."
             ]
           }
         }
@@ -551,8 +566,9 @@
             "action": "ESCALATE",
             "message": "🚑 Sinais de obstrução de via aérea: procure emergência agora.",
             "self_care": [
-              "Mantenha-se hidratado.",
-              "Evite esforços até ser avaliado."
+              "Sente-se ou mantenha posição que facilite a respiração.",
+              "Use inalador ou nebulização prescritos, se disponíveis.",
+              "Peça ajuda imediatamente e evite deitar."
             ]
           }
         },
@@ -565,8 +581,9 @@
             "action": "ESCALATE",
             "message": "⚠️ Disfagia/aspiração: avaliação presencial prioritária.",
             "self_care": [
-              "Mantenha-se hidratado.",
-              "Evite esforços até ser avaliado."
+              "Suspenda alimentos e bebidas até avaliação.",
+              "Permaneça sentado e incline o tronco para frente se engasgar.",
+              "Peça ajuda de alguém próximo caso os engasgos se repitam."
             ]
           }
         },
@@ -579,8 +596,9 @@
             "action": "ESCALATE",
             "message": "⚠️ Rouquidão persistente: agende avaliação para exame da laringe.",
             "self_care": [
-              "Mantenha-se hidratado.",
-              "Evite esforços até ser avaliado."
+              "Repouse a voz o máximo possível.",
+              "Evite fumar, álcool e ambientes com poeira.",
+              "Mantenha boa hidratação."
             ]
           }
         },
@@ -593,8 +611,9 @@
             "action": "ESCALATE",
             "message": "⚠️ Sinais oncológicos: avaliação especializada prioritária.",
             "self_care": [
-              "Mantenha-se hidratado.",
-              "Evite esforços até ser avaliado."
+              "Anote os sintomas e sua duração.",
+              "Mantenha alimentação equilibrada e boa hidratação.",
+              "Evite tabaco e bebidas alcoólicas."
             ]
           }
         }
