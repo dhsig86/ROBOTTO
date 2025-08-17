@@ -68,7 +68,24 @@ document.addEventListener('DOMContentLoaded', () => {
   fetch('rules_otorrino.json')
     .then(r => r.json())
     .then(data => {
+      const cachedStr = localStorage.getItem(RULES_KEY);
+      if (cachedStr) {
+        try {
+          const cachedData = JSON.parse(cachedStr);
+          if (
+            cachedData.version === data.version &&
+            cachedData.updated_at === data.updated_at
+          ) {
+            rules = cachedData;
+            return;
+          }
+          console.info('Cache de regras invalidado. Nova versão detectada.');
+        } catch (e) {
+          console.warn('Erro ao analisar cache de regras. Substituindo por nova versão.', e);
+        }
+      }
       rules = data;
+      localStorage.removeItem(RULES_KEY);
       localStorage.setItem(RULES_KEY, JSON.stringify(data));
     })
     .catch(err => {
