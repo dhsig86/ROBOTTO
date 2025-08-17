@@ -77,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
             cachedData.updated_at === data.updated_at
           ) {
             rules = cachedData;
+            preprocessDomainKeywords(rules);
             return;
           }
           console.info('Cache de regras invalidado. Nova versão detectada.');
@@ -85,6 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
       rules = data;
+      preprocessDomainKeywords(rules);
       localStorage.removeItem(RULES_KEY);
       localStorage.setItem(RULES_KEY, JSON.stringify(data));
     })
@@ -94,6 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (cached) {
         try {
           rules = JSON.parse(cached);
+          preprocessDomainKeywords(rules);
           botSay('Usando regras em cache offline.');
           return;
         } catch (e) {
@@ -288,56 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
     saveChat();
   }
 
-  function normalize(str) {
-    return str
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .toLowerCase();
-  }
-
-  function levenshtein(a, b) {
-    const matrix = Array.from({ length: b.length + 1 }, () => []);
-    for (let i = 0; i <= b.length; i++) matrix[i][0] = i;
-    for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
-    for (let i = 1; i <= b.length; i++) {
-      for (let j = 1; j <= a.length; j++) {
-        const cost = b[i - 1] === a[j - 1] ? 0 : 1;
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j] + 1,
-          matrix[i][j - 1] + 1,
-          matrix[i - 1][j - 1] + cost
-        );
-      }
-    }
-    return matrix[b.length][a.length];
-  }
-
-  function similarity(a, b) {
-    const dist = levenshtein(a, b);
-    return 1 - dist / Math.max(a.length, b.length);
-  }
-
-  function classifyDomain(text) {
-    const map = rules?.logic?.domain_classification_keywords || {};
-    const normText = normalize(text);
-    let best = { domain: 'outro', score: 0 };
-    for (const [domain, keywords] of Object.entries(map)) {
-      for (const kw of keywords) {
-        if (kw.startsWith('/') && kw.endsWith('/')) {
-          const re = new RegExp(kw.slice(1, -1), 'i');
-          if (re.test(normText)) return { domain, confidence: 1 };
-          continue;
-        }
-        const normKw = normalize(kw);
-        if (normText.includes(normKw)) return { domain, confidence: 1 };
-        for (const word of normText.split(/\s+/)) {
-          const score = similarity(word, normKw);
-          if (score > best.score) best = { domain, score };
-        }
-      }
-    }
-    return { domain: best.domain, confidence: best.score };
-  }
+  // utilities for domain classification moved to classifier.js
 
   function askNextFlag() {
     if (chat.flagIndex >= chat.flags.length) {
