@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let messageHistory = [];
   let lastQuickReplies = [];
   let editingSymptoms = false;
+  let latestResultFile = '';
 
   function saveChat() {
     const data = {
@@ -260,6 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+
   flagForm.addEventListener('submit', e => {
     e.preventDefault();
     flagOverlay.style.display = 'none';
@@ -278,6 +280,7 @@ document.addEventListener('DOMContentLoaded', () => {
       showAdvice();
     }
   });
+
 
   function scrollToBottom() {
     messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -482,6 +485,27 @@ document.addEventListener('DOMContentLoaded', () => {
     quickReplies.appendChild(sendBtn);
   }
 
+  function persistResults(resumo) {
+    const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const file = `results-${date}.json`;
+    try {
+      localStorage.setItem(file, JSON.stringify(resumo));
+      latestResultFile = file;
+    } catch (e) {
+      const blob = new Blob([JSON.stringify(resumo, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = file;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      latestResultFile = file;
+    }
+    return file;
+  }
+
   function showAdvice() {
     const advice = rules.domains?.[chat.domain]?.non_urgent_advice;
     if (advice) {
@@ -506,6 +530,11 @@ document.addEventListener('DOMContentLoaded', () => {
       answers: chat.answers
     };
 
+    const fileName = persistResults(summary);
+    if (!DOCTOR_ENDPOINT) {
+      botSay(`Resumo salvo como ${fileName}. Baixe ou acesse este arquivo para enviar ao seu médico.`);
+    }
+
     quickReplies.innerHTML = '';
     const sendBtn = document.createElement('button');
     sendBtn.type = 'button';
@@ -520,9 +549,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function sendResultsToDoctor(resumo) {
     if (!DOCTOR_ENDPOINT) {
+      persistResults(resumo);
       const json = JSON.stringify(resumo, null, 2);
       const subject = encodeURIComponent('Resumo da triagem');
-      const body = encodeURIComponent(`Segue resumo da triagem:\n\n${json}`);
+      const body = encodeURIComponent(`Segue resumo da triagem.\n\n${json}\n\nAnexe o arquivo ${latestResultFile} ao compartilhar com o profissional de saúde.`);
 
       const mail = document.createElement('a');
       mail.href = `mailto:?subject=${subject}&body=${body}`;
@@ -531,17 +561,7 @@ document.addEventListener('DOMContentLoaded', () => {
       mail.click();
       document.body.removeChild(mail);
 
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const dl = document.createElement('a');
-      dl.href = url;
-      dl.download = 'triagem.json';
-      document.body.appendChild(dl);
-      dl.click();
-      document.body.removeChild(dl);
-      URL.revokeObjectURL(url);
-
-      botSay('Envio simulado. Um e-mail foi preparado e o arquivo pode ser baixado para compartilhar com um profissional.');
+      botSay(`Envio simulado. Utilize o arquivo ${latestResultFile} para compartilhar os resultados com seu médico.`);
       return;
     }
 
