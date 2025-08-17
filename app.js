@@ -411,7 +411,12 @@ document.addEventListener('DOMContentLoaded', () => {
       parts.push(level.cta);
     }
     const msg = parts.filter(Boolean).join(' ').trim();
-    botSay(msg);
+    const prefix = rules.ui_texts?.global_escalation_prefix;
+    const finalMsg = prefix ? `${prefix} ${msg}`.trim() : msg;
+    botSay(finalMsg);
+    if (rules.ui_texts?.schedule_cta) {
+      botSay(rules.ui_texts.schedule_cta);
+    }
     chat.state = 'END';
     progressBar.value = 0;
   }
@@ -421,9 +426,15 @@ document.addEventListener('DOMContentLoaded', () => {
     if (advice) {
       const summary = Array.isArray(advice.summary) ? advice.summary.join(' ') : (advice.summary || '');
       const safety = Array.isArray(advice.safety_net) ? advice.safety_net.join(' ') : (advice.safety_net || '');
-      botSay(`${summary} ${safety}`.trim());
+      const summaryText = summary ? `${rules.ui_texts?.advice_prefix || ''} ${summary}`.trim() : '';
+      const safetyText = safety ? `${rules.ui_texts?.safety_net_prefix || ''} ${safety}`.trim() : '';
+      const msg = `${summaryText} ${safetyText}`.trim();
+      if (msg) botSay(msg);
     } else {
       botSay('Sem orientações específicas. Procure um especialista se necessário.');
+    }
+    if (rules.ui_texts?.schedule_cta) {
+      botSay(rules.ui_texts.schedule_cta);
     }
     chat.state = 'END';
     progressBar.value = 0;
