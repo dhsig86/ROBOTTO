@@ -66,9 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
       messageHistory = data.messages || [];
       messageHistory.forEach(m => {
         if (m.sender === 'user') {
-          renderUser(m.text, false);
+          renderUser(m.text, false, m.time);
         } else {
-          renderBot(m.text, false);
+          renderBot(m.text, false, m.time);
         }
       });
       lastQuickReplies = data.quickReplies || [];
@@ -109,32 +109,64 @@ document.addEventListener('DOMContentLoaded', () => {
     messages.scrollTop = messages.scrollHeight;
   }
 
-  function renderUser(text, save = true) {
+  function renderUser(text, save = true, time = new Date().toLocaleTimeString()) {
     const wrapper = document.createElement('div');
     wrapper.className = 'message user';
+
+    const avatar = document.createElement('span');
+    avatar.className = 'avatar';
+    avatar.textContent = '🧑';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+
     const content = document.createElement('div');
     content.className = 'content';
     content.textContent = text;
-    wrapper.appendChild(content);
+
+    const timestamp = document.createElement('span');
+    timestamp.className = 'timestamp';
+    timestamp.textContent = time;
+
+    bubble.appendChild(content);
+    bubble.appendChild(timestamp);
+    wrapper.appendChild(avatar);
+    wrapper.appendChild(bubble);
     messages.appendChild(wrapper);
     scrollToBottom();
     if (save) {
-      messageHistory.push({ sender: 'user', text });
+      messageHistory.push({ sender: 'user', text, time });
       saveChat();
     }
   }
 
-  function renderBot(text, save = true) {
+  function renderBot(text, save = true, time = new Date().toLocaleTimeString()) {
     const wrapper = document.createElement('div');
     wrapper.className = 'message bot';
+
+    const avatar = document.createElement('span');
+    avatar.className = 'avatar';
+    avatar.textContent = '🤖';
+
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+
     const content = document.createElement('div');
     content.className = 'content';
     content.textContent = text;
-    wrapper.appendChild(content);
+
+    const timestamp = document.createElement('span');
+    timestamp.className = 'timestamp';
+    timestamp.textContent = time;
+
+    bubble.appendChild(content);
+    bubble.appendChild(timestamp);
+    wrapper.appendChild(avatar);
+    wrapper.appendChild(bubble);
     messages.appendChild(wrapper);
     scrollToBottom();
     if (save) {
-      messageHistory.push({ sender: 'bot', text });
+      messageHistory.push({ sender: 'bot', text, time });
       saveChat();
     }
   }
