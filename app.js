@@ -34,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
       this.answeredCount = 0;
       this.answers = {};
       this.symptomsOffered = false;
+      this.symptoms = [];
       this.pendingIntake = '';
     }
   }
@@ -203,18 +204,14 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
     const selected = Array.from(symptomForm.querySelectorAll('input[name="symptom"]:checked')).map(i => i.value);
     symptomOverlay.style.display = 'none';
-    if (selected.length) {
-      selected.forEach(sym => {
-        const txt = rules?.guidelines?.[sym];
-        if (txt) {
-          botSay(`Para ${sym}: ${txt}`);
-        }
-      });
-    }
+    chat.symptoms = selected;
+    saveChat();
     if (chat.pendingIntake) {
       const pending = chat.pendingIntake;
       chat.pendingIntake = '';
       handleIntake(pending);
+    } else if (chat.state === 'ASK_FLAGS') {
+      askNextFlag();
     } else {
       beginIntake();
     }
@@ -222,10 +219,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   skipSymptomsBtn.addEventListener('click', () => {
     symptomOverlay.style.display = 'none';
+    chat.symptoms = [];
+    saveChat();
     if (chat.pendingIntake) {
       const pending = chat.pendingIntake;
       chat.pendingIntake = '';
       handleIntake(pending);
+    } else if (chat.state === 'ASK_FLAGS') {
+      askNextFlag();
     } else {
       beginIntake();
     }
