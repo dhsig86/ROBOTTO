@@ -16,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const symptomOptions = document.getElementById('symptom-options');
   const skipSymptomsBtn = document.getElementById('skip-symptoms');
   const reviewSymptomsBtn = document.getElementById('review-symptoms');
+  const flagOverlay = document.getElementById('flag-overlay');
+  const flagForm = document.getElementById('flag-form');
+  const flagOptions = document.getElementById('flag-options');
+  const noFlagsCheckbox = document.getElementById('no-flags');
 
   const LGPD_KEY = 'rob-accept-lgpd';
   const THEME_KEY = 'otto-theme';
@@ -47,6 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let messageHistory = [];
   let lastQuickReplies = [];
   let editingSymptoms = false;
+  let latestResultFile = '';
 
   function saveChat() {
     const data = {
@@ -155,6 +160,25 @@ document.addEventListener('DOMContentLoaded', () => {
     symptomOverlay.style.display = 'flex';
   }
 
+  function renderRedFlags() {
+    flagOptions.innerHTML = '';
+    chat.flags.forEach(flag => {
+      const label = document.createElement('label');
+      label.className = 'flex items-center space-x-2';
+      const input = document.createElement('input');
+      input.type = 'checkbox';
+      input.name = 'flag';
+      input.value = flag.id;
+      label.appendChild(input);
+      const span = document.createElement('span');
+      span.textContent = flag.question;
+      label.appendChild(span);
+      flagOptions.appendChild(label);
+    });
+    noFlagsCheckbox.checked = false;
+    flagOverlay.style.display = 'flex';
+  }
+
   let savedChat = localStorage.getItem(CHAT_KEY);
   const savedTimestamp = parseInt(localStorage.getItem(TIMESTAMP_KEY), 10);
   if (savedTimestamp && Date.now() - savedTimestamp > MAX_CHAT_AGE) {
@@ -237,6 +261,27 @@ document.addEventListener('DOMContentLoaded', () => {
       renderSymptoms(true);
     });
   }
+
+  flagForm.addEventListener('submit', e => {
+    e.preventDefault();
+    flagOverlay.style.display = 'none';
+    const selected = Array.from(flagForm.querySelectorAll('input[name="flag"]:checked')).map(i => i.value);
+    chat.flags.forEach(f => {
+      const val = noFlagsCheckbox.checked ? 'Não' : (selected.includes(f.id) ? 'Sim' : 'Não');
+      chat.answers[f.id] = val;
+    });
+    chat.answeredCount = chat.flags.length;
+    progressBar.value = chat.answeredCount;
+    saveChat();
+    const firstYes = noFlagsCheckbox.checked ? null : chat.flags.find(f => selected.includes(f.id));
+    if (firstYes) {
+      escalate(firstYes);
+    } else {
+      showAdvice();
+    }
+  });
+
+
 
   function scrollToBottom() {
     messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -367,20 +412,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // utilities for domain classification moved to classifier.js
 
   function askNextFlag() {
-    if (chat.flagIndex >= chat.flags.length) {
+    if (!chat.flags.length) {
       chat.state = 'ADVICE';
       showAdvice();
       return;
     }
-    chat.pendingFlags = [];
-    const batchSize = Math.min(rules?.logic?.ask_batch_size || 1, 3);
-    while (chat.flagIndex < chat.flags.length && chat.pendingFlags.length < batchSize) {
-      const flag = chat.flags[chat.flagIndex++];
-      chat.pendingFlags.push(flag);
-      botSay(flag.question);
-    }
-    const opts = (rules.logic?.answer_options || []).map(o => ({ label: o, value: o }));
-    renderQuickReplies(opts);
+    renderRedFlags();
   }
 
   function applyAnswer(value) {
@@ -389,7 +426,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!flag) return;
     chat.answers[flag.id] = value;
     chat.answeredCount++;
-    progressBar.value = chat.answeredCount / chat.flags.length;
+    progressBar.value = chat.answeredCount;
     if (value === 'Sim') {
       chat.state = 'ESCALATE';
       escalate(flag);
@@ -399,7 +436,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const opts = (rules.logic?.answer_options || []).map(o => ({ label: o, value: o }));
       renderQuickReplies(opts);
     } else {
-      askNextFlag();
+      if (chat.flagIndex >= chat.flags.length) {
+        chat.state = 'ADVICE';
+        showAdvice();
+      } else {
+        askNextFlag();
+      }
     }
   }
 
@@ -425,6 +467,44 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     chat.state = 'END';
     progressBar.value = 0;
+
+    const summary = {
+      domain: chat.domain,
+      symptoms: chat.symptoms,
+      answers: chat.answers
+    };
+
+    quickReplies.innerHTML = '';
+    const sendBtn = document.createElement('button');
+    sendBtn.type = 'button';
+    sendBtn.className = 'rounded bg-green-600 px-3 py-1 text-white';
+    sendBtn.textContent = 'Enviar para médico';
+    sendBtn.addEventListener('click', () => {
+      sendBtn.disabled = true;
+      sendResultsToDoctor(summary);
+    });
+    quickReplies.appendChild(sendBtn);
+  }
+
+  function persistResults(resumo) {
+    const date = new Date().toISOString().slice(0, 10).replace(/-/g, '');
+    const file = `results-${date}.json`;
+    try {
+      localStorage.setItem(file, JSON.stringify(resumo));
+      latestResultFile = file;
+    } catch (e) {
+      const blob = new Blob([JSON.stringify(resumo, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = file;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      latestResultFile = file;
+    }
+    return file;
   }
 
   function showAdvice() {
@@ -451,6 +531,11 @@ document.addEventListener('DOMContentLoaded', () => {
       answers: chat.answers
     };
 
+    const fileName = persistResults(summary);
+    if (!DOCTOR_ENDPOINT) {
+      botSay(`Resumo salvo como ${fileName}. Baixe ou acesse este arquivo para enviar ao seu médico.`);
+    }
+
     quickReplies.innerHTML = '';
     const sendBtn = document.createElement('button');
     sendBtn.type = 'button';
@@ -465,9 +550,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   async function sendResultsToDoctor(resumo) {
     if (!DOCTOR_ENDPOINT) {
+      persistResults(resumo);
       const json = JSON.stringify(resumo, null, 2);
       const subject = encodeURIComponent('Resumo da triagem');
-      const body = encodeURIComponent(`Segue resumo da triagem:\n\n${json}`);
+      const body = encodeURIComponent(`Segue resumo da triagem.\n\n${json}\n\nAnexe o arquivo ${latestResultFile} ao compartilhar com o profissional de saúde.`);
 
       const mail = document.createElement('a');
       mail.href = `mailto:?subject=${subject}&body=${body}`;
@@ -476,17 +562,7 @@ document.addEventListener('DOMContentLoaded', () => {
       mail.click();
       document.body.removeChild(mail);
 
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const dl = document.createElement('a');
-      dl.href = url;
-      dl.download = 'triagem.json';
-      document.body.appendChild(dl);
-      dl.click();
-      document.body.removeChild(dl);
-      URL.revokeObjectURL(url);
-
-      botSay('Envio simulado. Um e-mail foi preparado e o arquivo pode ser baixado para compartilhar com um profissional.');
+      botSay(`Envio simulado. Utilize o arquivo ${latestResultFile} para compartilhar os resultados com seu médico.`);
       return;
     }
 
@@ -550,6 +626,8 @@ document.addEventListener('DOMContentLoaded', () => {
     chat.answeredCount = 0;
     chat.answers = {};
     chat.state = 'ASK_FLAGS';
+    progressBar.max = chat.flags.length;
+    progressBar.value = 0;
     setTimeout(askNextFlag, 600);
   }
 
