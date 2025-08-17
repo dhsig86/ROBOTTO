@@ -30,6 +30,6 @@ def test_multiple_symptom_guidelines():
     messages = json.loads(out)
     assert messages == [
         'Beba água e evite ambientes com fumaça.',
-        'Lave o nariz com soro fisiológico.',
+        'Use solução salina para aliviar o entupimento.',
         'Reduza cafeína e álcool; procure otorrino se persistente.'
     ]

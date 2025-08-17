@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const messages = document.getElementById('messages');
+  const messagesEl = document.getElementById('messages');
   const quickReplies = document.getElementById('quick-replies');
   const inputForm = document.getElementById('input-form');
   const userInput = document.getElementById('user-input');
@@ -232,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function scrollToBottom() {
-    messages.scrollTop = messages.scrollHeight;
+    messagesEl.scrollTop = messagesEl.scrollHeight;
   }
 
   function renderUser(text, save = true, time = new Date().toLocaleTimeString()) {
@@ -258,7 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
     bubble.appendChild(timestamp);
     wrapper.appendChild(avatar);
     wrapper.appendChild(bubble);
-    messages.appendChild(wrapper);
+    messagesEl.appendChild(wrapper);
     scrollToBottom();
     if (save) {
       messageHistory.push({ sender: 'user', text, time });
@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', () => {
     bubble.appendChild(timestamp);
     wrapper.appendChild(avatar);
     wrapper.appendChild(bubble);
-    messages.appendChild(wrapper);
+    messagesEl.appendChild(wrapper);
     scrollToBottom();
     if (save) {
       messageHistory.push({ sender: 'bot', text, time });
@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     content.appendChild(indicator);
     temp.appendChild(content);
-    messages.appendChild(temp);
+    messagesEl.appendChild(temp);
     scrollToBottom();
     setTimeout(() => {
       temp.remove();
@@ -496,7 +496,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   function reset() {
-    messages.innerHTML = '';
+    messagesEl.innerHTML = '';
     quickReplies.innerHTML = '';
     userInput.value = '';
     progressBar.value = 0;
