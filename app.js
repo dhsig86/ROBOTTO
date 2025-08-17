@@ -230,10 +230,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   });
 
-  reviewSymptomsBtn.addEventListener('click', () => {
-    editingSymptoms = true;
-    renderSymptoms(true);
-  });
+  if (reviewSymptomsBtn) {
+    reviewSymptomsBtn.addEventListener('click', () => {
+      editingSymptoms = true;
+      renderSymptoms(true);
+    });
+  }
 
   function scrollToBottom() {
     messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -251,11 +253,11 @@ document.addEventListener('DOMContentLoaded', () => {
     bubble.className = 'flex flex-col items-end';
 
     const content = document.createElement('div');
-    content.className = 'w-fit max-w-[90%] rounded-lg bg-blue-300 p-3 leading-snug text-black';
+    content.className = 'w-fit max-w-[90%] rounded-lg bg-blue-300 p-3 leading-snug text-gray-900 dark:text-gray-100';
     content.textContent = text;
 
     const timestamp = document.createElement('span');
-    timestamp.className = 'mt-1 text-xs text-gray-600';
+    timestamp.className = 'mt-1 text-xs text-gray-600 dark:text-gray-400';
     timestamp.textContent = time;
 
     bubble.appendChild(content);
@@ -282,11 +284,11 @@ document.addEventListener('DOMContentLoaded', () => {
     bubble.className = 'flex flex-col items-start';
 
     const content = document.createElement('div');
-    content.className = 'w-fit max-w-[90%] rounded-lg bg-gray-100 p-3 leading-snug text-black';
+    content.className = 'w-fit max-w-[90%] rounded-lg bg-gray-100 p-3 leading-snug text-gray-900 dark:text-gray-100';
     content.textContent = text;
 
     const timestamp = document.createElement('span');
-    timestamp.className = 'mt-1 text-xs text-gray-600';
+    timestamp.className = 'mt-1 text-xs text-gray-600 dark:text-gray-400';
     timestamp.textContent = time;
 
     bubble.appendChild(content);
@@ -305,12 +307,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const temp = document.createElement('div');
     temp.className = 'mb-4 flex items-end';
     const content = document.createElement('div');
-    content.className = 'w-fit max-w-[90%] rounded-lg bg-gray-100 p-3 leading-snug text-black';
+    content.className = 'w-fit max-w-[90%] rounded-lg bg-gray-100 p-3 leading-snug text-gray-900 dark:text-gray-100';
     const indicator = document.createElement('div');
     indicator.className = 'flex gap-1';
     for (let i = 0; i < 3; i++) {
       const dot = document.createElement('span');
-      dot.className = 'h-2 w-2 rounded-full bg-gray-400 animate-[blink_1.4s_infinite_both]';
+      dot.className = 'h-2 w-2 rounded-full bg-gray-400 dark:bg-gray-600 animate-[blink_1.4s_infinite_both]';
       dot.style.animationDelay = `${i * 0.2}s`;
       indicator.appendChild(dot);
     }
