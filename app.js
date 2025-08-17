@@ -230,10 +230,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   });
 
-  reviewSymptomsBtn.addEventListener('click', () => {
-    editingSymptoms = true;
-    renderSymptoms(true);
-  });
+  if (reviewSymptomsBtn) {
+    reviewSymptomsBtn.addEventListener('click', () => {
+      editingSymptoms = true;
+      renderSymptoms(true);
+    });
+  }
 
   function scrollToBottom() {
     messagesEl.scrollTop = messagesEl.scrollHeight;
@@ -396,7 +398,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const opts = (rules.logic?.answer_options || []).map(o => ({ label: o, value: o }));
       renderQuickReplies(opts);
     } else {
-      askNextFlag();
+      if (chat.flagIndex >= chat.flags.length) {
+        chat.state = 'ADVICE';
+        showAdvice();
+      } else {
+        askNextFlag();
+      }
     }
   }
 
@@ -422,6 +429,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     chat.state = 'END';
     progressBar.value = 0;
+
+    const summary = {
+      domain: chat.domain,
+      symptoms: chat.symptoms,
+      answers: chat.answers
+    };
+
+    quickReplies.innerHTML = '';
+    const sendBtn = document.createElement('button');
+    sendBtn.type = 'button';
+    sendBtn.className = 'rounded bg-green-600 px-3 py-1 text-white';
+    sendBtn.textContent = 'Enviar para médico';
+    sendBtn.addEventListener('click', () => {
+      sendBtn.disabled = true;
+      sendResultsToDoctor(summary);
+    });
+    quickReplies.appendChild(sendBtn);
   }
 
   function showAdvice() {
