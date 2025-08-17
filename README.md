@@ -46,6 +46,13 @@ Por ser uma aplicação estática, basta abrir `index.html` em um navegador
 compatível. Para atualizar as regras, modifique `rules_otorrino.json` e valide o
 conteúdo com `python validate_rules.py`.
 
+## Boas práticas de acessibilidade
+
+- Botões de respostas rápidas possuem atributos `aria-label` descritivos.
+- Todas as opções podem ser navegadas via teclado (Tab) e selecionadas com **Enter** ou **Espaço**.
+- Recomenda-se testar a interface com leitores de tela como [NVDA](https://www.nvaccess.org/) ou VoiceOver.
+- Ao adicionar novos componentes, mantenha contraste e semântica adequados.
+
 ## Política de retenção de dados
 
 - As informações do chat e o consentimento LGPD são armazenados apenas no
