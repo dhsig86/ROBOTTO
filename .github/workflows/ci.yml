@@ -13,7 +13,7 @@ jobs:
         with:
           python-version: '3.11'
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        run: pip install --upgrade -r requirements.txt
       - name: Validate rules
         run: python validate_rules.py --path rules_otorrino.json
       - name: Run tests
