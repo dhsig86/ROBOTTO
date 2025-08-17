@@ -20,6 +20,7 @@ REQUIRED_KEYS = {
     "domains",
     "logic",
     "guidelines",
+    "updated_at",
 }
 REQUIRED_ANSWER_OPTIONS = {"Sim", "Não"}
 
