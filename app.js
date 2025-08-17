@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const RULES_KEY = 'otto-rules';
   const TIMESTAMP_KEY = 'otto-chat-ts';
   const MAX_CHAT_AGE = 30 * 24 * 60 * 60 * 1000; // 30 dias
+  const DOCTOR_ENDPOINT = window.DOCTOR_ENDPOINT || '/api/send-results';
 
   let rules = null;
 
@@ -424,9 +425,9 @@ document.addEventListener('DOMContentLoaded', () => {
   function showAdvice() {
     const advice = rules.domains?.[chat.domain]?.non_urgent_advice;
     if (advice) {
-      const summary = Array.isArray(advice.summary) ? advice.summary.join(' ') : (advice.summary || '');
+      const advSummary = Array.isArray(advice.summary) ? advice.summary.join(' ') : (advice.summary || '');
       const safety = Array.isArray(advice.safety_net) ? advice.safety_net.join(' ') : (advice.safety_net || '');
-      const summaryText = summary ? `${rules.ui_texts?.advice_prefix || ''} ${summary}`.trim() : '';
+      const summaryText = advSummary ? `${rules.ui_texts?.advice_prefix || ''} ${advSummary}`.trim() : '';
       const safetyText = safety ? `${rules.ui_texts?.safety_net_prefix || ''} ${safety}`.trim() : '';
       const msg = `${summaryText} ${safetyText}`.trim();
       if (msg) botSay(msg);
@@ -438,6 +439,37 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     chat.state = 'END';
     progressBar.value = 0;
+
+    const summary = {
+      domain: chat.domain,
+      symptoms: chat.symptoms,
+      answers: chat.answers
+    };
+
+    quickReplies.innerHTML = '';
+    const sendBtn = document.createElement('button');
+    sendBtn.type = 'button';
+    sendBtn.className = 'rounded bg-green-600 px-3 py-1 text-white';
+    sendBtn.textContent = 'Enviar para médico';
+    sendBtn.addEventListener('click', () => {
+      sendBtn.disabled = true;
+      sendResultsToDoctor(summary);
+    });
+    quickReplies.appendChild(sendBtn);
+  }
+
+  async function sendResultsToDoctor(resumo) {
+    try {
+      await fetch(DOCTOR_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(resumo)
+      });
+      botSay('Resultados enviados ao médico.');
+    } catch (err) {
+      console.error('Erro ao enviar resultados:', err);
+      botSay('Não foi possível enviar os resultados.');
+    }
   }
 
   function handleIntake(text) {
